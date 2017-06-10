@@ -5,24 +5,29 @@ import { HttpModule, JsonpModule } from '@angular/http';
 
 import {SearchComponent} from './components/index';
 import {SearchListComponent} from './components/search-list.component';
+import {SearchFormComponent} from './components/search-form.component';
+
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
-     HttpModule,
-    JsonpModule,
-    
+    HttpModule,
+    JsonpModule
   ],
   declarations: [
-      SearchComponent
+      SearchComponent,
+      SearchListComponent,
+      SearchFormComponent
   ],
 
   providers: [
   ],
 
   exports:[
-      SearchComponent
+      SearchComponent,
+      SearchListComponent,
+      SearchFormComponent
   ]
   
 })
