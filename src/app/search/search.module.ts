@@ -6,6 +6,8 @@ import { HttpModule, JsonpModule } from '@angular/http';
 import {SearchComponent} from './components/index';
 import {SearchListComponent} from './components/search-list.component';
 import {SearchFormComponent} from './components/search-form.component';
+import {SearchResultComponent} from './components/search-result.component';
+
 
 
 @NgModule({
@@ -18,7 +20,8 @@ import {SearchFormComponent} from './components/search-form.component';
   declarations: [
       SearchComponent,
       SearchListComponent,
-      SearchFormComponent
+      SearchFormComponent,
+      SearchResultComponent
   ],
 
   providers: [
@@ -27,7 +30,8 @@ import {SearchFormComponent} from './components/search-form.component';
   exports:[
       SearchComponent,
       SearchListComponent,
-      SearchFormComponent
+      SearchFormComponent,
+      SearchResultComponent
   ]
   
 })
