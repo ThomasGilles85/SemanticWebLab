@@ -4,6 +4,8 @@ import { FormsModule }    from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 
 import {SearchComponent} from './components/index';
+import {SearchListComponent} from './components/search-list.component';
+
 @NgModule({
   imports: [
     BrowserModule,
