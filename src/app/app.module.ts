@@ -6,6 +6,7 @@ import { HttpModule, JsonpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 
 import {SearchModule} from './search/search.module';
+import {EmitterService} from './emitter.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,9 @@ import {SearchModule} from './search/search.module';
     JsonpModule,
     SearchModule
   ],
-  providers: [],
+  providers: [
+    EmitterService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
