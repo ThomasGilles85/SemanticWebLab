@@ -21,6 +21,6 @@ import { HttpModule, JsonpModule } from '@angular/http';
   ]
   
 })
-export class CommentModule {
+export class SearchModule {
 }
 
