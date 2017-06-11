@@ -1,7 +1,7 @@
 import { Injectable }     from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Standard }           from '../model/STO';
-import { SerachResult }           from '../model/SearchResult';
+import { Standard } from '../model/STO';
+// import { SearchResult } from '../model/SearchResult';
 
 import {Observable} from 'rxjs/Rx';
 

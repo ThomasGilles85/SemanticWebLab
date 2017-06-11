@@ -1,3 +1,4 @@
+
 export class Standard {
     constructor(
         public hasStatus:string,

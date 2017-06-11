@@ -1,6 +1,7 @@
-import { Standard } from "./Standard";
+import { Standard } from "./STO";
 
-export class SerachResult {
+
+export class SearchResult {
     constructor(
         public results:Standard[]
         ){}
