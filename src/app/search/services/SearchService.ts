@@ -1,7 +1,6 @@
 import { Injectable }     from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Standard } from '../model/STO';
-// import { SearchResult } from '../model/SearchResult';
+import { Http, Response, Headers, RequestOptions, RequestOptionsArgs } from '@angular/http';
+import { Standard,SDO,Domain,ISA95Level,StandardLicence,StandardParts,RAMIITLayer,RAMIHierarchyLevel,AdminShellSubmodel } from '../model/STO';
 
 import {Observable} from 'rxjs/Rx';
 
@@ -14,16 +13,53 @@ export class SearchService {
      // Resolve HTTP using the constructor
      constructor (private http: Http) {}
 
-    private searchUrl = 'https://scotch-http-api.herokuapp.com/api/comments'; 
-     
-     // Fetch all existing comments
-     getStandards() : Observable<Standard[]>{
+    private searchUrl = 'http://vocol.iais.fraunhofer.de:/sto/fuseki/myDataset/query'; 
+    private body = 'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX sto: <https://w3id.org/i40/sto#> SELECT DISTINCT ?norm ?status ?pubDate WHERE { ?std a sto:Standard . ?std sto:norm "62714" . OPTIONAL{?std sto:norm ?norm .} OPTIONAL{?std sto:hasStatus ?status .} OPTIONAL{?std sto:hasPublicationDate ?pubDate .}  }'
+    private queryOptions;
+
+
+    //Fetch all existing comments
+    getStandards(): Observable<Standard[]> {
          // ...using get request
-         return this.http.get(this.searchUrl)
-                        // ...and calling .json() on the response to return data
-                         .map((res:Response) => res.json())
-                         //...errors if any
-                         .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+
+        let headers = new Headers();
+        headers.append('Accept-Encoding', 'gzip, deflate'); 
+        headers.append('Accept', 'application/sparql-results+json,*/*;q=0.9'); 
+        headers.append('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8'); 
+
+        let options = new RequestOptions({ headers: headers }); // Create a request option
+
+
+        return this.http.post(this.searchUrl,this.body, options)   
+            .map(this.extractDataforSearch)
+            .catch(this.handleErrorObservable);
         
-     }   
+     } 
+
+  private extractDataforSearch(res: Response):Standard[] {
+    let standards : Standard[] = [];
+    
+    let body = res.json();
+
+    console.log(res.status);
+    let bindings = body["results"]["bindings"];
+
+
+    for(let entry of bindings)
+    {
+       standards.push(Standard.ConvertFromJson(entry));
+    }
+
+    console.log(standards);
+
+    return standards;
+  }
+
+    private handleErrorObservable (error: Response | any) {
+        console.log("Error");
+	    console.error(error.message || error);
+	    return Observable.throw(error.message || error);
+    }
+
+
 }

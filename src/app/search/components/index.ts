@@ -7,11 +7,9 @@ import {EmitterService} from '../../emitter.service';
     selector: 'search-widget',
     template: `
         <div>
-            <search-form></comment-form>
-            <search-list></comment-list>
+            <search-form></search-form>
+            <search-list></search-list>
         </div>
     `,
 })
-export class SearchComponent { 
-
- }
+export class SearchComponent {  }

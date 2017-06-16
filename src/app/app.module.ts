@@ -24,4 +24,5 @@ import {EmitterService} from './emitter.service';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+ }

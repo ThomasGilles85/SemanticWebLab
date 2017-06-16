@@ -37,6 +37,5 @@ import {SearchService} from './services/SearchService';
   ]
   
 })
-export class SearchModule {
-}
+export class SearchModule {}
 
