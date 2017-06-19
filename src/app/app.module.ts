@@ -10,12 +10,15 @@ import {SearchModule} from './search/search.module';
 import {EmitterService} from './emitter.service';
 
 import {SearchComponent} from './search.component';
+import {DetailsComponent} from './details.component';
+
 import {PageNotFoundComponent} from './not-found.component';
 
 
 
 const appRoutes: Routes = [
   { path: '', component: SearchComponent },
+  { path: 'details/:id', component: DetailsComponent },
   { path: '**', component: PageNotFoundComponent },
 ];
 
@@ -24,6 +27,7 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     SearchComponent,
+    DetailsComponent,
     PageNotFoundComponent
   ],
   imports: [

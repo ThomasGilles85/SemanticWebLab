@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { EmitterService } from '../../emitter.service';
 import { Standard} from '../model/STO';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+
 
 
 @Component({
@@ -19,7 +21,7 @@ import { Standard} from '../model/STO';
                         <p>{{standard.hasPublicationDate | date: 'dd/MM/yyyy'}}</p>
                     </div>
                      <div class="col-md-2">
-                        <button class="btn btn-info" style="horizontal-align:middle"><span class="glyphicon glyphicon-info-sign"></span></button>
+                        <button (click)="showDetails($event)" id="{{standard.norm}}" class="btn btn-info" style="horizontal-align:middle"><span class="glyphicon glyphicon-info-sign"></span></button>
                     </div>
                 </div>  
             </div>
@@ -27,11 +29,15 @@ import { Standard} from '../model/STO';
     `
 })
 export class SearchResultComponent { 
-     constructor(
+     constructor(  private router: Router
         ){}
 
     @Input() standard: Standard;
     @Input() listId: string;
 
-  
+    showDetails(event){
+        var target = event.currentTarget;
+        var value = target.id;
+        this.router.navigate(['/details', value]);
+    }
  }
