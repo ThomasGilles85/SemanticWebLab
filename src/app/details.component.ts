@@ -6,7 +6,7 @@ import 'rxjs/add/operator/switchMap';
 @Component({
   selector: 'details-root',
   template: `
-          Welcome to the details number {{id}}
+          <details-widget [standardId]="id"></details-widget>
         `,
 })
 export class DetailsComponent {

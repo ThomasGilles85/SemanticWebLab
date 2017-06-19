@@ -4,6 +4,8 @@ import { FormsModule }    from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 
 import {SearchService} from './../services/SearchService';
+import {DetailsViewComponent} from './components/index';
+
 
 
 @NgModule({
@@ -14,7 +16,7 @@ import {SearchService} from './../services/SearchService';
     JsonpModule
   ],
   declarations: [
-
+    DetailsViewComponent
   ],
 
   providers: [
@@ -22,7 +24,7 @@ import {SearchService} from './../services/SearchService';
   ],
 
   exports:[
-
+    DetailsViewComponent
   ]
   
 })

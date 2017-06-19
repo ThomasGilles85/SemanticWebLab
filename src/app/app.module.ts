@@ -7,6 +7,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 
 import {SearchModule} from './search/search.module';
+import {DetailsModule} from './details/details.module';
+
 import {EmitterService} from './emitter.service';
 
 import {SearchComponent} from './search.component';
@@ -37,6 +39,7 @@ const appRoutes: Routes = [
     HttpModule,
     JsonpModule,
     SearchModule,
+    DetailsModule
   ],
   providers: [
     EmitterService
