@@ -26,6 +26,6 @@ export class SearchFormComponent{
     private standards;
 
     submitSearch(){
-                    this.searchService.getStandards().subscribe();
+                    this.searchService.getStandardsforSearch().subscribe();
     }
  }
