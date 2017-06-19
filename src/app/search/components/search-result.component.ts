@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { EmitterService } from '../../emitter.service';
-import { Standard} from '../model/STO';
+import { Standard} from '../../model/STO';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 

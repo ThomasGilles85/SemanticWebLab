@@ -2,7 +2,7 @@
 // Imports
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Standard} from '../model/STO';
+import { Standard} from '../../model/STO';
 
 import { EmitterService } from '../../emitter.service';
 

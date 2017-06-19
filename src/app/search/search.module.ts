@@ -8,7 +8,7 @@ import {SearchListComponent} from './components/search-list.component';
 import {SearchFormComponent} from './components/search-form.component';
 import {SearchResultComponent} from './components/search-result.component';
 
-import {SearchService} from './services/SearchService';
+import {SearchService} from './../services/SearchService';
 
 
 @NgModule({
