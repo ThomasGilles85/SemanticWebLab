@@ -7,9 +7,11 @@ import {EmitterService} from '../../emitter.service';
     selector: 'search-widget',
     template: `
         <div>
-            <search-form></search-form>
-            <search-list></search-list>
+            <search-form [listId]="listId"></search-form>
+            <search-list [listId]="listId"></search-list>
         </div>
     `,
 })
-export class SearchComponent {  }
+export class SearchComponent {  
+    private listId = 'COMMENT_COMPONENT_LIST';
+}

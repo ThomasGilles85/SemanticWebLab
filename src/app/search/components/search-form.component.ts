@@ -10,10 +10,13 @@ import { EmitterService } from '../../emitter.service';
 @Component({
     selector: 'search-form',
     template: `
-                <form (ngSubmit)="submitSearch()">
+        <form (ngSubmit)="submitSearch()">
             <div class="form-group">
-                <br />
-                <button type="submit" class="btn btn-primary btn-block">Add</button>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search"></span></span>
+                    <input type="text" class="form-control" placeholder="Search for" [(ngModel)]="searchString" name="search">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Search</button>
                 </div>
         </form>
     `,
@@ -23,9 +26,18 @@ export class SearchFormComponent{
     constructor(private searchService: SearchService
         ){}
   
-    private standards;
+    @Input() listId: string;
+
+    private searchString:string;
 
     submitSearch(){
-                    this.searchService.getStandardsforSearch().subscribe();
+        this.searchService.getStandardsforSearch(this.searchString).subscribe(
+            standards => {
+                EmitterService.get(this.listId).emit(standards);
+            },
+            err => {
+                 console.log(err);
+            }
+        );
     }
  }

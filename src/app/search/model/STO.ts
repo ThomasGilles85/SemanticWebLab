@@ -5,6 +5,12 @@ export class Standard {
     public norm:string;
     public hasPublicationDate:Date;
 
+    constructor() {
+        this.hasStatus ="No data";
+        this.norm = "No data";
+        this.hasPublicationDate = new Date(1,1,1);
+    }
+
     public developer:SDO;
     public publisher:SDO;
     public scope:Domain;
@@ -37,12 +43,9 @@ export class Standard {
 }
 
 export class SDO{
-
     public orgName:string;
     public formationDate:Date;
-    public abbreviation:String[];
-
-    
+    public abbreviation:String[];    
 }
 
 export class Domain{

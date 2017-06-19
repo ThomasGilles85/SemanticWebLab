@@ -13,12 +13,12 @@ export class SearchService {
     private headers: Headers;
     private options: RequestOptions;
     private url = 'http://vocol.iais.fraunhofer.de:/sto/fuseki/myDataset/query'; 
-    private bodyForSearch = 'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX sto: <https://w3id.org/i40/sto#> SELECT DISTINCT ?norm ?status ?pubDate WHERE { ?std a sto:Standard . ?std sto:norm "62714" . OPTIONAL{?std sto:norm ?norm .} OPTIONAL{?std sto:hasStatus ?status .} OPTIONAL{?std sto:hasPublicationDate ?pubDate .}  }'
     private queryOptions;
 
      constructor (private http: Http) {
         
         this.headers = new Headers();
+
 
         this.headers.append('Accept-Encoding', 'gzip, deflate'); 
         this.headers.append('Accept', 'application/sparql-results+json,*/*;q=0.9'); 
@@ -28,9 +28,12 @@ export class SearchService {
 
      }
 
-    getStandardsforSearch(): Observable<Standard[]> {
+    getStandardsforSearch(searchString : string): Observable<Standard[]> {
 
-      return this.http.post(this.url,this.bodyForSearch, this.options)   
+      let body = 'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX sto: <https://w3id.org/i40/sto#> SELECT DISTINCT ?norm ?status ?pubDate WHERE { ?std a sto:Standard . ?std sto:norm "' + searchString + '" . OPTIONAL{?std sto:norm ?norm .} OPTIONAL{?std sto:hasStatus ?status .} OPTIONAL{?std sto:hasPublicationDate ?pubDate .}  }'
+      console.log(body);
+
+      return this.http.post(this.url,body, this.options)   
       .map(this.extractDataforSearch)
       .catch(this.handleErrorObservable);       
      } 
