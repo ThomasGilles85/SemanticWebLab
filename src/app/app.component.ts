@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   template: `
-      <search-widget></search-widget>
+      <router-outlet></router-outlet>
         `,
 })
 export class AppComponent {}
