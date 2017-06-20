@@ -7,6 +7,8 @@ import {SearchService} from './../services/SearchService';
 import {DetailsViewComponent} from './components/index';
 import {SDOViewComponent} from './components/SDO-View';
 import {StandardViewComponent} from './components/Standard-View';
+import {RamiViewComponent} from './components/Rami-View';
+
 
 
 
@@ -21,6 +23,7 @@ import {StandardViewComponent} from './components/Standard-View';
   declarations: [
     DetailsViewComponent,
     StandardViewComponent,
+    RamiViewComponent,
     SDOViewComponent
   ],
 
@@ -31,6 +34,7 @@ import {StandardViewComponent} from './components/Standard-View';
   exports:[
     DetailsViewComponent,
     StandardViewComponent,
+    RamiViewComponent,
     SDOViewComponent
   ]
   

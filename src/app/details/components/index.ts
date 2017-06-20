@@ -3,26 +3,29 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 import { EmitterService } from '../../emitter.service';
-import { Standard, SDO } from "app/model/STO";
+import { Domain ,Standard, SDO , AdminShellSubmodel , RAMIITLayer , RAMIHierarchyLevel , StandardParts , StandardLicence } from "app/model/STO";
 
 @Component({
     selector: 'details-widget',
     template: `
     <h2>Details</h2>
-        <div class="row">
+    <div class="row">
+        <div class="col-md-12">
+            <Standard-view [header]="'Standard information'" [standard]="standard"></Standard-view>
+        </div>
+    </div>
+    <div class="row"> 
+        <div class="col-md-4">
+            <SDO-view [header]="'Publisher'" [sdo]="standard.publisher"></SDO-view>
+        </div>
+        <div class="col-md-4">
+            <SDO-view [header]="'Developer'" [sdo]="standard.developer"></SDO-view>
+        </div>
 
-            <div class="col-md-4">
-                <Standard-view [header]="'Standard information'" [standard]="standard"></Standard-view>
-            </div>
-            <div class="col-md-4">
-                <SDO-view [header]="'Publisher'" [sdo]="standard.publisher"></SDO-view>
-            </div>
-            <div class="col-md-4">
-                <SDO-view [header]="'Developer'" [sdo]="standard.developer"></SDO-view>
-            </div>
-
-
-</div>
+        <div class="col-md-4">
+            <Rami-view [header]="'RAMI'" [standard]="standard"></Rami-view>
+        </div>
+    </div>
     `,
 })
 export class DetailsViewComponent {
@@ -44,6 +47,11 @@ export class DetailsViewComponent {
         this.standard.hasStatus = "Active";
         this.standard.hasPublicationDate = new Date();
 
+        this.standard.isPartOf = [new StandardParts("Part1"),new StandardParts("Part2")];
+
+        this.standard.licence = new StandardLicence("Term","Type");
+        this.standard.scope = new Domain("DomainName");
+
 
         this.standard.developer = new SDO();
 
@@ -56,6 +64,10 @@ export class DetailsViewComponent {
         this.standard.publisher.abbreviation = ["Test1", "Test2"];
         this.standard.publisher.formationDate = new Date();
         this.standard.publisher.orgName = "Frauenhofer";
+
+        this.standard.hasAdminShellSubmodel = new AdminShellSubmodel("Submodel");
+        this.standard.hasRAMIITLayer = new RAMIITLayer("IT-Layer");
+        this.standard.ramiHierarchyLevel = new RAMIHierarchyLevel("HierarchyLevel");
 
 
 
