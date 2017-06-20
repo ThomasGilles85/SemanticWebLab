@@ -5,6 +5,9 @@ import { HttpModule, JsonpModule } from '@angular/http';
 
 import {SearchService} from './../services/SearchService';
 import {DetailsViewComponent} from './components/index';
+import {SDOViewComponent} from './components/SDO-View';
+import {StandardViewComponent} from './components/Standard-View';
+
 
 
 
@@ -16,7 +19,9 @@ import {DetailsViewComponent} from './components/index';
     JsonpModule
   ],
   declarations: [
-    DetailsViewComponent
+    DetailsViewComponent,
+    StandardViewComponent,
+    SDOViewComponent
   ],
 
   providers: [
@@ -24,7 +29,9 @@ import {DetailsViewComponent} from './components/index';
   ],
 
   exports:[
-    DetailsViewComponent
+    DetailsViewComponent,
+    StandardViewComponent,
+    SDOViewComponent
   ]
   
 })
