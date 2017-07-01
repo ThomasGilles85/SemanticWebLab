@@ -1,6 +1,7 @@
 /* * * ./app/comments/components/index.ts * * */
 // Imports
 import { Component, Input } from '@angular/core';
+import { collapsedContent } from "../../Shared/collapsedContent";
 
 import { SDO } from "app/model/STO";
 
@@ -8,8 +9,12 @@ import { SDO } from "app/model/STO";
     selector: 'SDO-view',
     template: `
     <div class="panel panel-primary">
-        <div class="panel-heading">{{header}}</div>
-        <div class="panel-body">
+        <div class="panel-heading">
+        <h4 class="panel-title">
+            <a (click)="isCollapsedContent = !isCollapsedContent">{{header}}</a>
+            </h4>
+        </div>
+        <div class="panel-body" *ngIf="!isCollapsedContent">
             <form class="form-horizontal">
                 <div class="form-group">
                     <label for="organisation" class="col-lg-3 control-label">Organisation</label>
@@ -25,7 +30,7 @@ import { SDO } from "app/model/STO";
                 </div>
                 <div class="form-group">     
                     <label for="abbreviation" class="col-lg-3 control-label">Abbreviation</label>
-                    <div class="col-lg-9">
+                    <div class="col-lg-9" style="overflow-y: auto;">
                         <table id="abbreviation">
                             <tr *ngFor="let row of sdo.abbreviation ">
                                 <td> {{row}}</td>
@@ -38,8 +43,7 @@ import { SDO } from "app/model/STO";
     </div>        
     `,
 })
-export class SDOViewComponent {
-
+export class SDOViewComponent extends collapsedContent{
 
     @Input() sdo: SDO;
     @Input() header:string;

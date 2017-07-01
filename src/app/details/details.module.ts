@@ -8,6 +8,8 @@ import {DetailsViewComponent} from './components/index';
 import {SDOViewComponent} from './components/SDO-View';
 import {StandardViewComponent} from './components/Standard-View';
 import {RamiViewComponent} from './components/Rami-View';
+import {GraphViewComponent} from './components/Graph-View';
+
 
 
 
@@ -24,7 +26,8 @@ import {RamiViewComponent} from './components/Rami-View';
     DetailsViewComponent,
     StandardViewComponent,
     RamiViewComponent,
-    SDOViewComponent
+    SDOViewComponent,
+    GraphViewComponent
   ],
 
   providers: [
@@ -35,7 +38,8 @@ import {RamiViewComponent} from './components/Rami-View';
     DetailsViewComponent,
     StandardViewComponent,
     RamiViewComponent,
-    SDOViewComponent
+    SDOViewComponent,
+    GraphViewComponent
   ]
   
 })
