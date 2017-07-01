@@ -8,6 +8,7 @@ import {EmitterService} from '../../emitter.service';
     template: `
         <div>
             <search-form [listId]="listId"></search-form>
+            <br>
             <search-list [listId]="listId"></search-list>
         </div>
     `,
