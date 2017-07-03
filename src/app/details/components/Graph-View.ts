@@ -4,36 +4,51 @@ import { collapsedContent } from "../../Shared/collapsedContent";
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 
-function collapse(d) {
-    if (d.children) {
-        d._children = d.children
-        d._children.forEach(collapse)
-        d.children = null
-    }
+function dragstarted(d) {
+    if (!D3.event.active) simulation.alphaTarget(0.3).restart()
+    d.fx = d.x;
+    d.fy = d.y;
 }
 
-function connector(d) {
-    return "M" + d.y + "," + d.x +
-        "C" + (d.y + d.parent.y) / 2 + "," + d.x +
-        " " + (d.y + d.parent.y) / 2 + "," + d.parent.x +
-        " " + d.parent.y + "," + d.parent.x;
+function dragged(d) {
+    d.fx = D3.event.x;
+    d.fy = D3.event.y;
 }
 
-function pointsTranslate(d) { return "translate(" + d.y + "," + d.x + ")"; }
+var colors = D3.scaleOrdinal(D3.schemeCategory10);
 
-function linkPoints(d) {
-    var o = { x: d.x, y: d.y, parent: { x: d.parent.x0, y: d.parent.y0 } };
-    return connector(o);
+function ticked() {
+    link
+        .attr("x1", function (d) { return d.source.x; })
+        .attr("y1", function (d) { return d.source.y; })
+        .attr("x2", function (d) { return d.target.x; })
+        .attr("y2", function (d) { return d.target.y; });
+
+    node
+        .attr("transform", function (d) { return "translate(" + d.x + ", " + d.y + ")"; });
+
+    edgepaths.attr('d', function (d) {
+        return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
+    });
+
+    edgelabels.attr('transform', function (d) {
+        if (d.target.x < d.source.x) {
+            var bbox = this.getBBox();
+
+            var rx = bbox.x + bbox.width / 2;
+            var ry = bbox.y + bbox.height / 2;
+            return 'rotate(180 ' + rx + ' ' + ry + ')';
+        }
+        else {
+            return 'rotate(0)';
+        }
+    });
 }
 
-function pointsExit(d) {
-    var o = { x: d.x, y: d.y, parent: { x: d.x, y: d.y } };
-    return connector(o);
-}
+var simulation, node, link;
+var edgepaths, edgelabels;
 
 
-
-var i;
 
 
 
@@ -70,16 +85,15 @@ export class GraphViewComponent extends collapsedContent implements OnChanges, A
     private margin;
     private width;
     private height;
-    private xAxis;
-    private yAxis;
     private htmlElement: HTMLElement;
-    private treemap;
-    private root;
-    private duration;
-    private i;
 
 
-    constructor( private router: Router) {
+
+
+
+
+
+    constructor(private router: Router) {
         super();
     }
 
@@ -99,242 +113,235 @@ export class GraphViewComponent extends collapsedContent implements OnChanges, A
 
     private setup(): void {
 
-            this.margin = { top: 20, right: 90, bottom: 30, left: 90 },
-            this.width = 960 - this.margin.left - this.margin.right,
-            this.height = 300 - this.margin.top - this.margin.bottom;
-
-
-        this.duration = 750;
-        i = 0;
+        this.margin = { top: 20, right: 90, bottom: 30, left: 90 };
+        if (window.screen.width < 1000) this.width = 1500 - this.margin.left - this.margin.right;
+        else this.width = window.screen.width - this.margin.left - this.margin.right - 100;
+        this.height = 600 - this.margin.top - this.margin.bottom;
     }
 
     private buildSVG(): void {
 
-        
+
         this.svg = this.host.append('svg')
             .attr('width', this.width + this.margin.left + this.margin.right)
-            .attr('height', this.height + this.margin.top + this.margin.bottom)
-            .append('g')
-            .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+            .attr('height', this.height + this.margin.top + this.margin.bottom);
 
 
-    this.treemap = D3.tree().size([this.height, this.width]);
+        this.svg.append('defs').append('marker')
+            .attr('id', 'arrowhead')
+            .attr('viewBox', '-0 -5 10 10')
+            .attr('refX', 13)
+            .attr('refY', 0)
+            .attr('orient', 'auto')
+            .attr('markerWidth', 13)
+            .attr('markerHeight', 13)
+            .attr('xoverflow', 'visible')
+            .append('svg:path')
+            .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+            .attr('fill', '#999')
+            .style('stroke', 'none');
+
+        simulation = D3.forceSimulation()
+            .force("link", D3.forceLink().id(function (d: any) { return d.id; }).distance(300).strength(1))
+            .force("charge", D3.forceManyBody())
+            .force("center", D3.forceCenter(window.screen.width / 2, this.height / 2));
 
 
-
-        // Collapse after the second level
-        var stratify = D3.stratify()
-            .id(function (d: any) {
-                return d.name;//This position
-            })
-            .parentId(function (d: any) {
-                return d.parent; //What position this position reports to
-            });
-
-        this.root = stratify(this.data);
-
-        this.root.each(d => {
-            d.name = d.id; //transferring name to a name variable
-            // d.id = i; //Assigning numerical Ids
-            // i++;
-        });
-
-            this.root.x0 = this.height / 2;
-            this.root.y0 = 0;
-
-
-        this.root.children.forEach(collapse);
-
-        this.update(this.root)
-    }
-
-    public children(d) {
-        return d.Children
+        this.update(this.data)
     }
 
     private update(source) {
 
-        var nodes = this.treemap(this.root).descendants(),
-            links = nodes.slice(1);
-
-        nodes.forEach(function (d) { d.y = d.depth * 180; });
-
-        var node = this.svg.selectAll("g.node")
-            .data(nodes, function (d) { return d.id || (d.id = ++this.i); });
-
-        var nodeEnter = node.enter().append("g")
-            .attr("class", "node")
-            .attr("transform", pointsTranslate)
-
-        nodeEnter.append("circle")
-            .attr("r", 1e-6)
-            .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-        nodeEnter.append("text")
-            .attr("x", function (d) { return d.children || d._children ? -10 : 10; })
-            .attr("dy", ".35em")
-            .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
-            .text(function (d) { return d.name; })
-            .style("fill-opacity", 1e-6);
-
-        var nodeUpdate = node.merge(nodeEnter).transition()
-            .duration(this.duration)
-            .attr("transform", pointsTranslate);
-
-        nodeUpdate.select("circle")
-            .attr("r", 4.5)
-            .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-        nodeUpdate.select("text")
-            .style("fill-opacity", 1);
-
-        var nodeExit = node.exit().transition()
-            .duration(this.duration)
-            .attr("transform", pointsTranslate)
-            .remove();
-
-        nodeExit.select("circle")
-            .attr("r", 1e-6);
-
-        nodeExit.select("text")
-            .style("fill-opacity", 1e-6);
-
-        var link = this.svg.selectAll("path.link")
-            .data(links);
-
-        link.transition()
-            .duration(this.duration)
-            .attr("d", connector);
-
-        var linkEnter = link.enter().insert("path", "g")
+        link = this.svg.selectAll(".link")
+            .data(source.links)
+            .enter()
+            .append("line")
             .attr("class", "link")
-            .attr("d", linkPoints);
+            .attr('marker-end', 'url(#arrowhead)')
 
-        link.merge(linkEnter).transition()
-            .duration(this.duration)
-            .attr("d", connector);
+        link.append("title")
+            .text(function (d) { return d.type; });
 
-        link.exit().transition()
-            .duration(this.duration)
-            .attr("d", pointsExit)
-            .remove();
+        edgepaths = this.svg.selectAll(".edgepath")
+            .data(source.links)
+            .enter()
+            .append('path')
+            .attr('class', 'edgepath')
+            .attr('fill-opacity', 0)
+            .attr('stroke-opacity', 0)
+            .attr('id', function (d, i) { return 'edgepath' + i }
+            )
+            .style("pointer-events", "none");
 
-        nodes.forEach(function (d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
+        edgelabels = this.svg.selectAll(".edgelabel")
+            .data(source.links)
+            .enter()
+            .append('text')
+            .style("pointer-events", "none")
+            .attr('class', 'edgelabel')
+            .attr('id', function (d, i) { return 'edgelabel' + i })
+            .attr('font-size', 10)
+            .attr('fill', '#aaa');
+
+        edgelabels.append('textPath')
+            .attr('xlink:href', function (d, i) { return '#edgepath' + i })
+            .style("text-anchor", "middle")
+            .style("pointer-events", "none")
+            .attr("startOffset", "50%")
+            .text(function (d) { return d.type });
+
+        node = this.svg.selectAll(".node")
+            .data(source.nodes)
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .call(D3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+            );
+
+        node.append("circle")
+            .attr("r", 5)
+            .style("fill", function (d, i) { return colors(i); })
+
+        node.append("title")
+            .text(function (d) { return d.id; });
+
+        node.append("text")
+            .attr("dy", -3)
+            .text(function (d) { return d.label; });
+
+        simulation
+            .nodes(source.nodes)
+            .on("tick", ticked);
+
+        simulation.force("link")
+            .links(source.links);
+
     }
+
+
+
     public Click(d) {
         if (d.localName === "circle") {
             var node = d.parentNode.__data__;
             if (String(node.id) !== this.currentStandard) {
-                this.selectedElement = node.id;
+                this.selectedElement = node.name;
                 this.selected = true;
             }
             else {
                 this.selected = false;
             }
-
-            if (node.children) {
-
-                // if (window.screen.width < 500) {
-                    node._children = node.children;
-                    node.children = null;
-
-                // }
-            }
-            else {
-                node.children = node._children;
-                node._children = null;
-            }
-            this.update(node);
         }
     }
 
     private MockData() {
-        this.data = [{
-            "name": "Hazer 5000",
-            "parent": "62714",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/stephen.jpg"
-        }, {
-            "name": "Employee 1",
-            "parent": "Hazer 5000",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/cory.jpg"
-        }, {
-            "name": "Analytics Area",
-            "parent": "Hazer 5000",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/matt.jpg"
-        }, {
-            "name": "Employee 2",
-            "parent": "Hazer 5000",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/XinheZhang.jpg"
-        }, {
-            "name": "Employee 3",
-            "parent": "Hazer 5000",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/craig.jpg"
-        }, {
-            "name": "Employee 4",
-            "parent": "Hazer 5000",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/youri.jpg"
-        }, {
-            "name": "Intern 1",
-            "parent": "Analytics Area",
-            "img": ""
-        }, {
-            "name": "Inter 2",
-            "parent": "Analytics Area",
-            "img": ""
-        }, {
-            "name": "62714",
-            "parent": null,
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/Brett.jpg"
-        }, {
-            "name": "CPA",
-            "parent": "62714",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/Wes.jpg"
-        }, {
-            "name": "Matt's wife",
-            "parent": "CPA",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/Amy_R.jpg"
-        }, {
-            "name": "Employee 5",
-            "parent": "CPA",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/DavidBriley.jpg"
-        }, {
-            "name": "Employee 6",
-            "parent": "CPA",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/BrittanyAllred_.jpg"
-        }, {
-            "name": "Employee 7",
-            "parent": "CPA",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/Shea.jpg"
-        }, {
-            "name": "Employee 8",
-            "parent": "Matt's wife",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/Mindy.jpg"
-        }, {
-            "name": "Employee 9",
-            "parent": "Matt's wife",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/Jessica_Stacy.jpg"
-        }, {
-            "name": "Employee 10",
-            "parent": "Matt's wife",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/FraleaneHudson.jpg"
-        }, {
-            "name": "Employee 11",
-            "parent": "Employee 9",
-            "img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-342/MeganPierce_.jpg"
-        }, {
-            "name": "Intern 3",
-            "parent": "Employee 8",
-            "img": ""
-        }, {
-            "name": "Intern 4",
-            "parent": "Employee 8",
-            "img": ""
-        }
-
-        ];
+        this.data = {
+            "nodes": [
+                {
+                    "name": "IEC_62714",
+                    "label": "IEC_62714",
+                    "id": "IEC_62714"
+                },
+                {
+                    "name": "eClass",
+                    "label": "eClass",
+                    "id": "eClass"
+                },
+                {
+                    "name": "IEC_61360",
+                    "label": "IEC_61360",
+                    "id": "IEC_61360"
+                },
+                {
+                    "name": "ISO_13584",
+                    "label": "ISO_13584",
+                    "id": "ISO_13584"
+                },
+                {
+                    "name": "IEC_61987_X",
+                    "label": "IEC_61987_X",
+                    "id": "IEC_61987_X"
+                },
+                {
+                    "name": "IEC_62541",
+                    "label": "IEC_62541",
+                    "id": "IEC_62541"
+                },
+                {
+                    "name": "IEC_61499",
+                    "label": "IEC_61499",
+                    "id": "IEC_61499"
+                },
+                {
+                    "name": "IEC_61131",
+                    "label": "IEC_61131",
+                    "id": "IEC_61131"
+                },
+                {
+                    "name": "IEC_20922",
+                    "label": "IEC_20922",
+                    "id": "IEC_20922"
+                },
+                {
+                    "name": "IEC_62424",
+                    "label": "IEC_62424",
+                    "id": "IEC_62424"
+                }
+            ],
+            "links": [
+                {
+                    "source": "IEC_62714",
+                    "target": "ISO_13584",
+                    "type": "relatedTo",
+                },
+                {
+                    "source": "IEC_62714",
+                    "target": "IEC_62424",
+                    "type": "relatedTo"
+                },
+                {
+                    "source": "IEC_62714",
+                    "target": "IEC_62541",
+                    "type": "relatedTo"
+                },
+                {
+                    "source": "IEC_62714",
+                    "target": "IEC_61987_X",
+                    "type": "relatedTo"
+                },
+                {
+                    "source": "ISO_13584",
+                    "target": "IEC_61360",
+                    "type": "relatedTo",
+                },
+                {
+                    "source": "IEC_62541",
+                    "target": "IEC_20922",
+                    "type": "relatedTo"
+                },
+                {
+                    "source": "IEC_62541",
+                    "target": "IEC_61499",
+                    "type": "relatedTo"
+                },
+                {
+                    "source": "IEC_61499",
+                    "target": "IEC_61131",
+                    "type": "relatedTo"
+                },
+                {
+                    "source": "ISO_13584",
+                    "target": "eClass",
+                    "type": "relatedTo"
+                },
+                {
+                    "source": "IEC_61360",
+                    "target": "eClass",
+                    "type": "relatedTo"
+                }
+            ]
+        };
     }
 
 
