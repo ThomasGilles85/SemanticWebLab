@@ -9,7 +9,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
     selector: 'search-result',
     template: `        
         <div class="panel panel-default">
-            <div class="panel-heading">{{standard.norm}}</div>
+            <div class="panel-heading">{{standard.publisher.abbreviation}} {{standard.norm}}</div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-2">

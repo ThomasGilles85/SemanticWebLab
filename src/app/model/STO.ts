@@ -18,7 +18,7 @@ export class Standard {
     public licence:StandardLicence;
     public isPartOf:StandardParts[];
     public relatedto:Standard[];
-    public ramiHierarchyLevel:RAMIHierarchyLevel;
+    public ramiHierarchyLevel:RAMIHierarchyLevel[];
     public hasRAMIITLayer:RAMIITLayer;
     public hasAdminShellSubmodel:AdminShellSubmodel;
     
@@ -29,12 +29,59 @@ export class Standard {
 
          for(let prop in jsonData)
         {
-            if(prop == "hasStatus" || prop == "norm")
+            if(prop == "status" || prop == "norm")
             {
                 standard[prop] = jsonData[prop]["value"];    
             }
-            else if(prop == "hasPublicationDate"){
+            else if(prop == "pubDate"){
                 standard[prop] = new Date(jsonData[prop]["value"]);    
+            }
+             else if(prop == "publisher"){
+                standard.publisher = new SDO();   
+                standard.publisher.abbreviation = jsonData[prop]["value"];
+            }
+        }    
+
+        return standard;
+    }
+
+    public static ConvertFromJsonForDetails(jsonData:any) :Standard
+    {
+
+        let standard = new Standard();
+
+         for(let prop in jsonData)
+        {
+            if(prop == "status" || prop == "norm")
+            {
+                standard[prop] = jsonData[prop]["value"];    
+            }
+            else if(prop == "pubDate"){
+                standard[prop] = new Date(jsonData[prop]["value"]);    
+            }
+            else if(prop == "pubformationDate"){
+                if(standard.publisher === null)standard.publisher = new SDO();   
+                standard.publisher.formationDate = new Date(jsonData[prop]["value"]);
+            }
+             else if(prop == "pubabbreviation"){
+                if(standard.publisher === null)standard.publisher = new SDO();   
+                standard.publisher.abbreviation = jsonData[prop]["value"];
+            }
+             else if(prop == "pubName"){
+                if(standard.publisher === null)standard.publisher = new SDO();   
+                standard.publisher.orgName = jsonData[prop]["value"];
+            }
+            else if(prop == "devformationDate"){
+                if(standard.developer === null)standard.developer = new SDO();   
+                standard.developer.formationDate = new Date(jsonData[prop]["value"]);
+            }
+             else if(prop == "devabbreviation"){
+                if(standard.developer === null)standard.developer = new SDO();   
+                standard.developer.abbreviation = jsonData[prop]["value"];
+            }
+             else if(prop == "devName"){
+                if(standard.developer === null)standard.developer = new SDO();   
+                standard.developer.orgName = jsonData[prop]["value"];
             }
         }    
 

@@ -31,11 +31,7 @@ import { SDO } from "app/model/STO";
                 <div class="form-group">     
                     <label for="abbreviation" class="col-lg-3 control-label">Abbreviation</label>
                     <div class="col-lg-9" style="overflow-y: auto;">
-                        <table id="abbreviation">
-                            <tr *ngFor="let row of sdo.abbreviation ">
-                                <td> {{row}}</td>
-                            </tr>
-                        </table>
+                        <input value="{{sdo.abbreviation[0]}}" readonly class="form-control" id="organisation" placeholder="Norm">
                     </div>
                 </div>
             </form>

@@ -30,7 +30,16 @@ export class SearchService {
 
     getStandardsforSearch(searchString : string): Observable<Standard[]> {
 
-      let body = 'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX sto: <https://w3id.org/i40/sto#> SELECT DISTINCT ?norm ?status ?pubDate WHERE { ?std a sto:Standard . ?std sto:norm "' + searchString + '" . OPTIONAL{?std sto:norm ?norm .} OPTIONAL{?std sto:hasStatus ?status .} OPTIONAL{?std sto:hasPublicationDate ?pubDate .}  }'
+      let body = 'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX sto: <https://w3id.org/i40/sto#> '+
+      'SELECT DISTINCT ?norm ?status ?pubDate ?publisher '+
+      'WHERE { '+
+      '?std a sto:Standard . ' +
+      '?std sto:norm "' + searchString + '" . ' +
+      'OPTIONAL{?std sto:norm ?norm .} ' +
+      'OPTIONAL{?std sto:hasStatus ?status .} ' +
+      'OPTIONAL{?std sto:hasPublicationDate ?pubDate .} ' +
+      'OPTIONAL{?std sto:publisher/sto:abbreviation ?publisher .}  }';
+      
       console.log(body);
 
       return this.http.post(this.url,body, this.options)   

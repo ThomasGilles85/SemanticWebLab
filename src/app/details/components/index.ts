@@ -8,7 +8,9 @@ import { Domain ,Standard, SDO , AdminShellSubmodel , RAMIITLayer , RAMIHierarch
 @Component({
     selector: 'details-widget',
     template: `
-    <h2>Details</h2> 
+    <div style="text-align: center;">
+    <h2>Details</h2>
+    </div> 
     <div class="row" style="margin-left: 0px; margin-right:0px;">
         <div class="col-md-12 col-lg-12 col-xs-12">
             <Standard-view [header]="'Standard information'" [standard]="standard"></Standard-view>
@@ -26,7 +28,6 @@ import { Domain ,Standard, SDO , AdminShellSubmodel , RAMIITLayer , RAMIHierarch
             <Rami-view [header]="'RAMI'" [standard]="standard"></Rami-view>
         </div>
     </div>
-    <br>
     <div class="row" style="margin-left: 0px; margin-right: 0px;"> 
         <div class="col-md-12 col-lg-12 col-xs-12">
             <graph-view [currentStandard]="standard.norm"></graph-view>
@@ -53,27 +54,31 @@ export class DetailsViewComponent {
         this.standard.hasStatus = "Active";
         this.standard.hasPublicationDate = new Date();
 
-        this.standard.isPartOf = [new StandardParts("Part1"),new StandardParts("Part2")];
+        // this.standard.isPartOf = [new StandardParts("Part1"),new StandardParts("Part2")];
 
-        this.standard.licence = new StandardLicence("Term","Type");
-        this.standard.scope = new Domain("DomainName");
+        this.standard.licence = new StandardLicence("Public","Public");
+        this.standard.scope = new Domain("CAD");
 
 
         this.standard.developer = new SDO();
 
-        this.standard.developer.abbreviation = ["Test1", "Test2"];
-        this.standard.developer.formationDate = new Date();
-        this.standard.developer.orgName = "Frauenhofer";
+        this.standard.developer.abbreviation = ["IEC"];
+        this.standard.developer.formationDate = new Date("1906-06-26");
+        this.standard.developer.orgName = "International Electrotechnical Commission";
 
         this.standard.publisher = new SDO();
 
-        this.standard.publisher.abbreviation = ["Test1", "Test2"];
-        this.standard.publisher.formationDate = new Date();
-        this.standard.publisher.orgName = "Frauenhofer";
+        this.standard.publisher.abbreviation = ["IEC"];
+        this.standard.publisher.formationDate = new Date("1906-06-26");
+        this.standard.publisher.orgName = "International Electrotechnical Commission";
 
-        this.standard.hasAdminShellSubmodel = new AdminShellSubmodel("Submodel");
-        this.standard.hasRAMIITLayer = new RAMIITLayer("IT-Layer");
-        this.standard.ramiHierarchyLevel = new RAMIHierarchyLevel("HierarchyLevel");
+        this.standard.hasAdminShellSubmodel = new AdminShellSubmodel("Engineering");
+        this.standard.hasRAMIITLayer = new RAMIITLayer("Information");
+        this.standard.ramiHierarchyLevel = [new RAMIHierarchyLevel("FieldDevice"),
+        new RAMIHierarchyLevel("Product"),
+        new RAMIHierarchyLevel("Station"),
+        new RAMIHierarchyLevel("ControlDevice")
+        ];
 
 
 

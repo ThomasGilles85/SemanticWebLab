@@ -16,12 +16,6 @@ import { collapsedContent } from "../../Shared/collapsedContent";
         </div>
         <div class="panel-body" *ngIf="!isCollapsedContent">
             <form class="form-horizontal">
-                <div class="form-group">
-                    <label for="ramiHierarchyLevel" class="col-lg-4 control-label">HierarchyLevel</label>
-                    <div class="col-lg-8">
-                        <input value="{{standard.ramiHierarchyLevel.Label}}" readonly class="form-control" id="ramiHierarchyLevel" placeholder="Norm">
-                    </div>
-                </div>  
                 <div class="form-group">     
                     <label for="rAMIITLayer" class="col-lg-4 control-label">ITLayer</label>
                     <div class="col-lg-8">
@@ -34,6 +28,16 @@ import { collapsedContent } from "../../Shared/collapsedContent";
                         <input value="{{standard.hasAdminShellSubmodel.Label}}" readonly class="form-control" id="adminShellSubmodel" placeholder="Date">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="ramiHierarchyLevel" class="col-lg-4 control-label">HierarchyLevel</label>
+                    <div class="col-lg-8" style="max-height:45px;overflow-y: auto;">
+                            <table id="ramiHierarchyLevel" class="table table-striped table-bordered">
+                                <tr *ngFor="let row of standard.ramiHierarchyLevel ">
+                                    <td > {{row.Label}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                </div>  
             </form>
         </div>
     </div>        
