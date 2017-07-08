@@ -9,7 +9,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
     selector: 'search-result',
     template: `        
         <div class="panel panel-default">
-            <div class="panel-heading">{{standard.publisher.abbreviation}} {{standard.norm}}</div>
+            <div class="panel-heading">{{standard.publisher[0].abbreviation[0]}} {{standard.norm[0]}}</div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-2">
@@ -21,7 +21,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
                         <p>{{standard.hasPublicationDate | date: 'dd/MM/yyyy'}}</p>
                     </div>
                      <div class="col-md-2">
-                        <button (click)="showDetails($event)" id="{{standard.norm}}" class="btn btn-info" style="horizontal-align:middle"><span class="glyphicon glyphicon-info-sign"></span></button>
+                        <button (click)="showDetails($event)" id="{{standard.uri}}" class="btn btn-info" style="horizontal-align:middle"><span class="glyphicon glyphicon-info-sign"></span></button>
                     </div>
                 </div>  
             </div>

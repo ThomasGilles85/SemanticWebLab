@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/switchMap';
           <details-widget [standardId]="id"></details-widget>
         `,
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit {
 
 public id:string;
 

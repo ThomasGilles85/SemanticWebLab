@@ -22,7 +22,7 @@ import { Standard } from "app/model/STO";
                             <label for="norm" class="col-lg-3 control-label">Norm</label>
 
                             <div class="col-lg-9">
-                                <input value="{{standard.norm}}" readonly class="form-control" id="norm" placeholder="Norm">
+                                <input value="{{standard.norm[0]}}" readonly class="form-control" id="norm" placeholder="Norm">
                             </div>
                         </div>  
                          <div class="form-group">     

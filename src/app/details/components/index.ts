@@ -1,7 +1,7 @@
 /* * * ./app/comments/components/index.ts * * */
 // Imports
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
-
+import{SearchService} from '../../services/SearchService'
 import { EmitterService } from '../../emitter.service';
 import { Domain ,Standard, SDO , AdminShellSubmodel , RAMIITLayer , RAMIHierarchyLevel , StandardParts , StandardLicence } from "app/model/STO";
 
@@ -30,27 +30,40 @@ import { Domain ,Standard, SDO , AdminShellSubmodel , RAMIITLayer , RAMIHierarch
     </div>
     <div class="row" style="margin-left: 0px; margin-right: 0px;"> 
         <div class="col-md-12 col-lg-12 col-xs-12">
-            <graph-view [currentStandard]="standard.norm"></graph-view>
+            <graph-view [currentStandard]="standard.norm[0]"></graph-view>
         </div>
     </div>
     `,
 })
-export class DetailsViewComponent {
+export class DetailsViewComponent implements OnInit {
 
-    standard: Standard;
+    standard: Standard = new Standard;
 
-    constructor() {
-        this.loadData();
+    constructor(private searchService: SearchService) {
+    }
 
+    ngOnInit() {
+        this.loadData().subscribe(
+            standard => {
+                this.standard = standard;
+            },
+            err => {
+                 console.log(err);
+            }
+        );
     }
 
     @Input() standardId: string;
 
+    loadData()
+    {
+        return this.searchService.getStandardsforDetails(this.standardId);
+    }
 
-    loadData() {
+    mockData() {
         this.standard = new Standard();
 
-        this.standard.norm = "62714";
+        this.standard.norm = ["62714"];
         this.standard.hasStatus = "Active";
         this.standard.hasPublicationDate = new Date();
 
@@ -60,17 +73,17 @@ export class DetailsViewComponent {
         this.standard.scope = new Domain("CAD");
 
 
-        this.standard.developer = new SDO();
+        this.standard.developer = [new SDO()];
 
-        this.standard.developer.abbreviation = ["IEC"];
-        this.standard.developer.formationDate = new Date("1906-06-26");
-        this.standard.developer.orgName = "International Electrotechnical Commission";
+        this.standard.developer[0].abbreviation = ["IEC"];
+        this.standard.developer[0].formationDate = new Date("1906-06-26");
+        this.standard.developer[0].orgName = ["International Electrotechnical Commission"];
 
-        this.standard.publisher = new SDO();
+        this.standard.publisher = [new SDO()];
 
-        this.standard.publisher.abbreviation = ["IEC"];
-        this.standard.publisher.formationDate = new Date("1906-06-26");
-        this.standard.publisher.orgName = "International Electrotechnical Commission";
+        this.standard.publisher[0].abbreviation = ["IEC"];
+        this.standard.publisher[0].formationDate = new Date("1906-06-26");
+        this.standard.publisher[0].orgName = ["International Electrotechnical Commission"];
 
         this.standard.hasAdminShellSubmodel = new AdminShellSubmodel("Engineering");
         this.standard.hasRAMIITLayer = new RAMIITLayer("Information");

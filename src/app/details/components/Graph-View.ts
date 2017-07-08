@@ -62,7 +62,7 @@ var edgepaths, edgelabels;
                 </h4>
             </div>  
         <div class="panel-body">
-            <a *ngIf="selected" href="details/{{selectedElement}}" class="btn btn-default">Go to Norm {{selectedElement}}</a>
+            <a *ngIf="selected" href="details/sto:{{selectedElement}}" class="btn btn-default">Go to Norm {{selectedElement}}</a>
             <div style="overflow: auto;" #container (click)="Click($event.target)"></div>
     </div>
     </div>
@@ -100,15 +100,16 @@ export class GraphViewComponent extends collapsedContent implements OnChanges, A
     ngAfterViewInit() {
         this.htmlElement = this.element.nativeElement;
         this.host = D3.select(this.htmlElement);
-        this.MockData();
-        this.setup();
-        this.buildSVG();
     }
 
     ngOnChanges(): void {
-        if (!this.data || !this.host) return;
+        if(this.currentStandard !=="No data")
+        {
+
+        this.MockData();
         this.setup();
         this.buildSVG();
+        }
     }
 
     private setup(): void {
@@ -143,8 +144,9 @@ export class GraphViewComponent extends collapsedContent implements OnChanges, A
 
         simulation = D3.forceSimulation()
             .force("link", D3.forceLink().id(function (d: any) { return d.id; }).distance(300).strength(1))
-            .force("charge", D3.forceManyBody())
+            .force("charge", D3.forceManyBody().strength(-10))
             .force("center", D3.forceCenter(window.screen.width / 2, this.height / 2));
+            
 
 
         this.update(this.data)

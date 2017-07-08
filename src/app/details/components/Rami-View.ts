@@ -31,11 +31,9 @@ import { collapsedContent } from "../../Shared/collapsedContent";
                 <div class="form-group">
                     <label for="ramiHierarchyLevel" class="col-lg-4 control-label">HierarchyLevel</label>
                     <div class="col-lg-8" style="max-height:45px;overflow-y: auto;">
-                            <table id="ramiHierarchyLevel" class="table table-striped table-bordered">
-                                <tr *ngFor="let row of standard.ramiHierarchyLevel ">
-                                    <td > {{row.Label}}</td>
-                                </tr>
-                            </table>
+                             <select id="ramiHierarchyLevel" class="form-control" name="color">
+                                  <option *ngFor="let c of standard.ramiHierarchyLevel" [ngValue]="c">{{c.Label}}</option>
+                            </select>
                         </div>
                 </div>  
             </form>
