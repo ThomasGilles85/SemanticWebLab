@@ -161,7 +161,11 @@ export class SearchService {
       .catch(this.handleErrorObservable);       
      } 
 
-	/* extractDataforSearch method get response  from sparql queries and return results to standard class as a standard object for further processing*/
+	/*
+	extractDataforSearch method get response  from sparql queries and return results to standard class as a standard object for further processing
+	Response is an Http response type
+	ConvertFromJsonForSearch is implemented in standard STO.ts model which splits up the data and extract properties out of it
+	*/
     
 	private extractDataforSearch(res: Response):Standard[] {
       let standards : Standard[] = [];
@@ -172,7 +176,7 @@ export class SearchService {
 
       for(let entry of bindings)
       {
-       standards.push(Standard.ConvertFromJsonForSearch(entry));
+       standards.push(Standard.ConvertFromJsonForSearch(entry));  // 
       }
 
       return standards;

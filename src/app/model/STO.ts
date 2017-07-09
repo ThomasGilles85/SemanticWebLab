@@ -80,14 +80,18 @@ export class Standard {
         }
     }
 
-
+    /* 
+	based on the sparql results we extract the properties of data as parsing JSON object 
+	*/
     public static ConvertFromJsonForSearch(jsonData: any): Standard {
 
          var standard = new Standard();
- 
+		
          standard.uri = "sto:" + jsonData["std"]["value"].split("#")[1];
-
-        for (let prop in jsonData) {
+		
+		console.log(standard.uri)
+        
+		for (let prop in jsonData) {
             if (prop == "status"){
                 standard[prop] = jsonData[prop]["value"];
             }
