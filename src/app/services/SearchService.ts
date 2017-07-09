@@ -161,7 +161,9 @@ export class SearchService {
       .catch(this.handleErrorObservable);       
      } 
 
-    private extractDataforSearch(res: Response):Standard[] {
+	/* extractDataforSearch method get response  from sparql queries and return results to standard class as a standard object for further processing*/
+    
+	private extractDataforSearch(res: Response):Standard[] {
       let standards : Standard[] = [];
     
       let body = res.json();
