@@ -27,7 +27,7 @@ export class SearchService {
         this.options = new RequestOptions({ headers: this.headers }); // Create a request option
 
      }
-
+    /* getStandardsforSearch is to search about the details of standards using different properties like norm,publisher ,developer,description,orgName */
     getStandardsforSearch(searchString : string): Observable<Standard[]> {
 
       let body = 'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX sto: <https://w3id.org/i40/sto#> PREFIX dc:<http://purl.org/dc/terms/> '+
