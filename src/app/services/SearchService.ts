@@ -7,6 +7,8 @@ import {Observable} from 'rxjs/Rx';
 // Import RxJs required methods
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/toPromise';
+
 
 @Injectable()
 export class SearchService {
@@ -40,7 +42,7 @@ export class SearchService {
       'UNION { ?std sto:publisher/sto:abbreviation "' + searchString + '" . } ' +
       'UNION { ?std sto:developer/sto:abbreviation "' + searchString + '" . } ' +
       'UNION { ?std sto:hasTag ?tag FILTER regex(str(?tag), "' + searchString + '") . } ' +
-      'UNION { ?std dc:description ?description FILTER regex(str(?description), "' + searchString + '") . } ' +
+      // 'UNION { ?std dc:description ?description FILTER regex(str(?description), "' + searchString + '") . } ' +
       'UNION { ?std sto:orgName ?orgName FILTER regex(str(?orgName), "' + searchString + '") . } } } ' +
       '{SELECT DISTINCT ?std (group_concat(?normText;separator="|") as ?norm) WHERE{ ?std sto:norm ?normText .}group by ?std}'+
       'OPTIONAL { { ' +
@@ -124,16 +126,16 @@ export class SearchService {
      } 
 
 
-     getChilds(start:string):Observable<Standard[]> {
+     getChilds(start:string):Observable<string[]> {
 
       let body =  'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
                   'PREFIX sto: <https://w3id.org/i40/sto#> '+
                   'SELECT DISTINCT ?x (group_concat(?norms;separator="|") as ?norm) (group_concat(?publishers;separator="|") as ?publisher) '+
                   'WHERE { '+
-                  'sto:'+ start + ' sto:relatedTo* ?x ' +
+                  start + ' sto:relatedTo* ?x .' +
                   '?x sto:norm ?norms . ' +
                   '?x sto:publisher/sto:abbreviation ?publishers . ' +
-                  'FILTER(sto:'+ start + ' != ?x).'+
+                  'FILTER(' + start + ' != ?x).'+
                   '} '+
                   'group by ?x';
                         
@@ -144,118 +146,148 @@ export class SearchService {
       .catch(this.handleErrorObservable);       
      } 
 
-     getPath(start:string,end:string): any {
+      async getPath(start:string,end:string){
 
       let body =  'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
                   'PREFIX sto: <https://w3id.org/i40/sto#> '+
                   'select distinct ?start ?relation ?end where { '+
-                  'sto:'+ start + ' (sto:relatedTo)* ?start . '+
+                  start + ' (sto:relatedTo)* ?start . '+
                   '?start ?relation ?end . '+
-                  '?end (sto:relatedTo)* sto:'+ end + ' . '+
+                  '?end (sto:relatedTo)* '+ end + ' . '+
+                  '}';
+                        
+      console.log(body);
+
+      let response = await this.http.post(this.url,body, this.options).toPromise();
+
+      return this.extractDataforPath(response);
+      // return this.http.post(this.url,body, this.options)   
+      // .map(this.extractDataforPath)
+      // .catch(this.handleErrorObservable);  
+     } 
+
+       getAutocompleteItems(): any {
+
+      let body =  'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
+                  'PREFIX sto: <https://w3id.org/i40/sto#> '+
+                  'SELECT DISTINCT ?norm ' +
+                  'WHERE{ ' +
+                  '?std a sto:Standard . ' + 
+                  '?std sto:norm ?norm . ' +
                   '}';
                         
       console.log(body);
 
       return this.http.post(this.url,body, this.options)   
-      .map(this.extractDataforSearch)
+      .map(this.extractDataforAutoComplete)
       .catch(this.handleErrorObservable);       
      } 
 
+     private extractDataforAutoComplete(res:Response):any
+     {
+        let items = [];
+
+        let body = res.json();
+
+
+        let bindings = body["results"]["bindings"];
+
+        for(let entry of bindings)
+        {
+        items.push(entry["norm"]["value"]);
+        }
+        return items;
+     }
+
     private extractDataforSearch(res: Response):Standard[] {
-      let standards : Standard[] = [];
-    
-      let body = res.json();
+        let standards : Standard[] = [];
+      
+        let body = res.json();
 
-      let bindings = body["results"]["bindings"];
+        let bindings = body["results"]["bindings"];
 
-      for(let entry of bindings)
-      {
-       standards.push(Standard.ConvertFromJsonForSearch(entry));
-      }
+        for(let entry of bindings)
+        {
+        standards.push(Standard.ConvertFromJsonForSearch(entry));
+        }
 
-      return standards;
+        return standards;
     }
 
    
     private extractDataforDetails(res: Response):Standard {
-      let standard : Standard;
-    
-      let body = res.json();
+        let standard : Standard;
+      
+        let body = res.json();
 
-      let bindings = body["results"]["bindings"];
+        let bindings = body["results"]["bindings"];
 
-      for(let entry of bindings)
-      {
-       standard = Standard.ConvertFromJsonForDetails(entry);
-      }
-
-      return standard;
-    }
-
-    private extractDataforGraphNodes(res: Response):Standard[] {
-      let standards : Standard[] = [];
-    
-      let body = res.json();
-
-      let bindings = body["results"]["bindings"];
-
-      for(let entry of bindings)
-      {
-       standards.push(Standard.ConvertFromJsonForGraphNodes(entry));
-      }
-
-      return standards;
-    }
-
-    private extractDataforPath(res: Response):path[] {
-      let links : path[] = [];
-    
-      let body = res.json();
-
-      let bindings = body["results"]["bindings"];
-
-      for(let entry of bindings)
-      {
-        var source = String(entry["start"]["value"]).split('#')[1];
-        var type = String(entry["relation"]["value"]).split('#')[1];
-        var target = String(entry["end"]["value"]).split('#')[1];
-
-        var found = false;
-        for(var i = 0; i < links.length; i++) {
-          if (links[i].source === source && links[i].type === type && links[i].target === target) {
-            found = true;
-            break;
-          }
-          else if(links[i].source === target && links[i].type === type && links[i].target === source)
-          {
-            found = true;
-            break;
-          }
-        }
-
-        if(found == false)
+        for(let entry of bindings)
         {
-          var path = new path();
-          path.source = source;
-          path.target = target;
-          path.type = type;
-          links.push(path)
+        standard = Standard.ConvertFromJsonForDetails(entry);
         }
-      }
 
-      return links;
+        return standard;
+    }
+
+    private extractDataforGraphNodes(res: Response):string[] {
+        let standards : string[] = [];
+      
+        let body = res.json();
+
+        let bindings = body["results"]["bindings"];
+
+        for(let entry of bindings)
+        {
+        standards.push(Standard.ConvertFromJsonForGraphNodes(entry));
+        }
+
+        return standards;
+    }
+
+    private extractDataforPath(res: Response):any[] {
+        let links:any = [];
+      
+        let body = res.json();
+
+        let bindings = body["results"]["bindings"];
+
+        for(let entry of bindings)
+        {
+          var source = "sto:"+String(entry["start"]["value"]).split('#')[1];
+          var type = String(entry["relation"]["value"]).split('#')[1];
+          var target = "sto:"+String(entry["end"]["value"]).split('#')[1];
+
+          var found = false;
+          for(var i = 0; i < links.length; i++) {
+            if (links[i].source === source && links[i].type === type && links[i].target === target) {
+              found = true;
+              break;
+            }
+            else if(links[i].source === target && links[i].type === type && links[i].target === source)
+            {
+              found = true;
+              break;
+            }
+          }
+
+          if(found == false)
+          {
+            var link:any = {};
+            link.source = source;
+            link.target = target;
+            link.type = type;
+            links.push(link)
+          }
+        }
+
+        return links;
     }
 
     private handleErrorObservable (error: Response | any) {
         console.log("Error");
-	    console.error(error.message || error);
-	    return Observable.throw(error.message || error);
+        console.error(error.message || error);
+        return null;
     }
 
-}
-
-class path{
-    public source;
-    public target;
-    public type;
 }

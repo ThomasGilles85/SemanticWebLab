@@ -30,7 +30,7 @@ import { Domain ,Standard, SDO , AdminShellSubmodel , RAMIITLayer , RAMIHierarch
     </div>
     <div class="row" style="margin-left: 0px; margin-right: 0px;"> 
         <div class="col-md-12 col-lg-12 col-xs-12">
-            <graph-view [currentStandard]="standard.norm[0]"></graph-view>
+            <graph-view [currentStandard]="standardId"></graph-view>
         </div>
     </div>
     `,

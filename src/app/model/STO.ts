@@ -62,8 +62,12 @@ export class Standard {
         if (refObject[targetObjectProperty] === undefined) refObject[targetObjectProperty] = new Array(data.length);
         var index = 0;
         while (index < data.length) {
-            if(refObject[targetObjectProperty][index] === undefined) refObject[targetObjectProperty][index] = new typeObject();        
-            refObject[targetObjectProperty][index][propertyName] = new DataType(data[index]);
+            if(refObject[targetObjectProperty][index] === undefined) refObject[targetObjectProperty][index] = new typeObject();   
+            try{     
+                refObject[targetObjectProperty][index][propertyName] = new DataType(data[index]);
+            }
+            catch(ex)
+            {}
             index++;
         }
     }
@@ -142,18 +146,15 @@ export class Standard {
         return standard;
     }
 
-    public static ConvertFromJsonForGraphNodes(jsonData: any): Standard {
+    public static ConvertFromJsonForGraphNodes(jsonData: any): string {
 
-        let standard = new Standard();
+        let standard:any = {};
 
-        for (let prop in jsonData) {
-            if (prop == "norm") {
-                standard[prop] = jsonData[prop]["value"];
-            }
-            else if (prop == "publisher") {
-                Standard.setPropertyForSplitDataWithManyToOne(standard,"publisher","orgName",jsonData[prop]["value"],SDO)
-            }
-        }
+        standard.name = jsonData["publisher"]["value"].split("|")[0]+ "_" + jsonData["norm"]["value"].split("|")[0];
+        standard.label = jsonData["publisher"]["value"].split("|")[0]+ "_" + jsonData["norm"]["value"].split("|")[0];
+        var temp = jsonData["x"]["value"].split("/")[4].split("#");
+
+        standard.id = temp[0] + ":" + temp[1];
 
         return standard;
     }
@@ -163,14 +164,24 @@ export class Standard {
 
 export class SDO {
     public orgName: string[];
-    public formationDate: Date;
     public abbreviation: String[];
 
     constructor(orgName: string[] = ["No data"], formationDate: Date = new Date(), abbreviation: string[] = ["No data"]) {
         this.orgName = orgName;
-        this.formationDate = formationDate;
+        this._formationDate = formationDate;
         this.abbreviation = abbreviation;
     }
+
+    private _formationDate: Date;
+    public get formationDate() : Date {
+        return this._formationDate;
+    }
+    public set formationDate(v : Date) {
+        if(!isNaN(v.getTime())){this._formationDate = v;}
+    }
+    
+
+
 }
 
 export class Domain {

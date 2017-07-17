@@ -2,6 +2,10 @@ import { Component, OnChanges, EventEmitter, AfterViewInit, Input, ElementRef, V
 import * as D3 from 'd3';
 import { collapsedContent } from "../../Shared/collapsedContent";
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import{SearchService} from '../../services/SearchService';
+import 'rxjs/add/operator/toPromise';
+
+
 
 
 function dragstarted(d) {
@@ -62,7 +66,7 @@ var edgepaths, edgelabels;
                 </h4>
             </div>  
         <div class="panel-body">
-            <a *ngIf="selected" href="details/sto:{{selectedElement}}" class="btn btn-default">Go to Norm {{selectedElement}}</a>
+            <a *ngIf="selected" href="details/{{selectedElement}}" class="btn btn-default">Go to Norm {{selectedElement}}</a>
             <div style="overflow: auto;" #container (click)="Click($event.target)"></div>
     </div>
     </div>
@@ -74,6 +78,7 @@ var edgepaths, edgelabels;
 export class GraphViewComponent extends collapsedContent implements OnChanges, AfterViewInit {
 
     private data;
+    private dataObject;
     public selectedElement;
     public selected;
 
@@ -93,7 +98,7 @@ export class GraphViewComponent extends collapsedContent implements OnChanges, A
 
 
 
-    constructor(private router: Router) {
+    constructor(private router: Router,private searchService: SearchService) {
         super();
     }
 
@@ -106,10 +111,79 @@ export class GraphViewComponent extends collapsedContent implements OnChanges, A
         if(this.currentStandard !=="No data")
         {
 
-        this.MockData();
-        this.setup();
-        this.buildSVG();
+        this.constructData();
         }
+    }
+
+    private constructData()
+    {
+
+        console.log(this.currentStandard);
+        this.searchService.getChilds(this.currentStandard).subscribe(
+            async(standard) => {
+                let item:any = {};
+                item.name =  this.currentStandard.split(":")[1];
+                item.label = this.currentStandard.split(":")[1];
+                item.id = this.currentStandard;
+
+
+                
+
+                this.dataObject = {};
+
+                this.dataObject.nodes = standard;
+                this.dataObject.links = [];
+
+                for(let entry of standard)
+                {
+                    let links = await this.searchService.getPath(item.id,entry["id"]);
+                    this.addLink(links);
+                    await this.delay(700);                    
+                    
+                }                
+
+                this.dataObject.nodes.push(item);
+
+                this.data = this.dataObject;
+
+                this.setup();
+                this.buildSVG();
+
+            },
+            err => {
+                 console.log(err);
+            }
+        );
+    }
+
+    private delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+    private addLink(links:any[])
+    {
+        for(let entry of links)
+        {
+          var found = false;
+          for(var i = 0; i < this.dataObject.links.length; i++) {
+            if (this.dataObject.links[i].source === entry.source && this.dataObject.links[i].type === entry.type && this.dataObject.links[i].target === entry.target) {
+              found = true;
+              break;
+            }
+          }
+
+          if(found == false)
+          {
+            var link:any = {};
+            link.source = entry.source;
+            link.target = entry.target;
+            link.type = entry.type;
+            this.dataObject.links.push(link)
+          }
+        }
+
+
+
     }
 
     private setup(): void {
@@ -228,7 +302,7 @@ export class GraphViewComponent extends collapsedContent implements OnChanges, A
         if (d.localName === "circle") {
             var node = d.parentNode.__data__;
             if (String(node.id) !== this.currentStandard) {
-                this.selectedElement = node.name;
+                this.selectedElement = node.id;
                 this.selected = true;
             }
             else {
