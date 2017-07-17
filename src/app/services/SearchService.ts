@@ -29,7 +29,7 @@ export class SearchService {
         this.options = new RequestOptions({ headers: this.headers }); // Create a request option
 
      }
-
+    /* getStandardsforSearch is to search about the details of standards using different properties like norm,publisher ,developer,description,orgName */
     getStandardsforSearch(searchString : string): Observable<Standard[]> {
 
       let body = 'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX sto: <https://w3id.org/i40/sto#> PREFIX dc:<http://purl.org/dc/terms/> '+
@@ -183,6 +183,7 @@ export class SearchService {
       .catch(this.handleErrorObservable);       
      } 
 
+<<<<<<< HEAD
      private extractDataforAutoComplete(res:Response):any
      {
         let items = [];
@@ -203,13 +204,32 @@ export class SearchService {
         let standards : Standard[] = [];
       
         let body = res.json();
+=======
+	/*
+	extractDataforSearch method get response  from sparql queries and return results to standard class as a standard object for further processing
+	Response is an Http response type
+	ConvertFromJsonForSearch is implemented in standard STO.ts model which splits up the data and extract properties out of it
+	*/
+    
+	private extractDataforSearch(res: Response):Standard[] {
+      let standards : Standard[] = [];
+    
+      let body = res.json();
+>>>>>>> ab3ff716419eda81cbcad0bd0273943685d3ee5f
 
         let bindings = body["results"]["bindings"];
 
+<<<<<<< HEAD
         for(let entry of bindings)
         {
         standards.push(Standard.ConvertFromJsonForSearch(entry));
         }
+=======
+      for(let entry of bindings)
+      {
+       standards.push(Standard.ConvertFromJsonForSearch(entry));  // 
+      }
+>>>>>>> ab3ff716419eda81cbcad0bd0273943685d3ee5f
 
         return standards;
     }
