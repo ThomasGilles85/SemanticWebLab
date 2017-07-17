@@ -183,7 +183,6 @@ export class SearchService {
       .catch(this.handleErrorObservable);       
      } 
 
-<<<<<<< HEAD
      private extractDataforAutoComplete(res:Response):any
      {
         let items = [];
@@ -200,11 +199,6 @@ export class SearchService {
         return items;
      }
 
-    private extractDataforSearch(res: Response):Standard[] {
-        let standards : Standard[] = [];
-      
-        let body = res.json();
-=======
 	/*
 	extractDataforSearch method get response  from sparql queries and return results to standard class as a standard object for further processing
 	Response is an Http response type
@@ -215,21 +209,13 @@ export class SearchService {
       let standards : Standard[] = [];
     
       let body = res.json();
->>>>>>> ab3ff716419eda81cbcad0bd0273943685d3ee5f
 
         let bindings = body["results"]["bindings"];
 
-<<<<<<< HEAD
-        for(let entry of bindings)
-        {
-        standards.push(Standard.ConvertFromJsonForSearch(entry));
-        }
-=======
       for(let entry of bindings)
       {
        standards.push(Standard.ConvertFromJsonForSearch(entry));  // 
       }
->>>>>>> ab3ff716419eda81cbcad0bd0273943685d3ee5f
 
         return standards;
     }
