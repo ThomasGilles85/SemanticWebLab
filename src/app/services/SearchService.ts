@@ -1,8 +1,9 @@
-import { Injectable }     from '@angular/core';
+import { Injectable , Inject }     from '@angular/core';
 import { Http, Response, Headers, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import { Standard,SDO,Domain,ISA95Level,StandardLicence,StandardParts,RAMIITLayer,RAMIHierarchyLevel,AdminShellSubmodel } from '../model/STO';
-
 import {Observable} from 'rxjs/Rx';
+import {APP_CONFIG,AppConfig} from '../config'
+
 
 // Import RxJs required methods
 import 'rxjs/add/operator/map';
@@ -17,10 +18,11 @@ export class SearchService {
     private url = 'http://vocol.iais.fraunhofer.de:/sto/fuseki/myDataset/query'; 
     private queryOptions;
 
-     constructor (private http: Http) {
+     constructor (private http: Http,@Inject(APP_CONFIG) config: AppConfig) {
         
         this.headers = new Headers();
 
+        this.url = config.url;
 
         this.headers.append('Accept-Encoding', 'gzip, deflate'); 
         this.headers.append('Accept', 'application/sparql-results+json,*/*;q=0.9'); 
@@ -166,7 +168,7 @@ export class SearchService {
       // .catch(this.handleErrorObservable);  
      } 
 
-       getAutocompleteItems(): any {
+      public getAutocompleteItems(): any {
 
       let body =  'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
                   'PREFIX sto: <https://w3id.org/i40/sto#> '+

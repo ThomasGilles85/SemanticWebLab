@@ -15,7 +15,8 @@ import {SearchComponent} from './search.component';
 import {DetailsComponent} from './details.component';
 
 import {PageNotFoundComponent} from './not-found.component';
-
+import {APP_CONFIG,APP_DI_CONFIG} from './config'
+ 
 
 
 const appRoutes: Routes = [
@@ -42,7 +43,8 @@ const appRoutes: Routes = [
     DetailsModule
   ],
   providers: [
-    EmitterService
+    EmitterService,
+    { provide: APP_CONFIG, useValue: APP_DI_CONFIG }
   ],
   bootstrap: [AppComponent]
 })
