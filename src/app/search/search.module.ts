@@ -9,7 +9,7 @@ import {SearchFormComponent} from './components/search-form.component';
 import {SearchResultComponent} from './components/search-result.component';
 
 import {SearchService} from './../services/SearchService';
-
+import {APP_CONFIG,APP_DI_CONFIG} from '../config'
 
 @NgModule({
   imports: [
@@ -26,7 +26,8 @@ import {SearchService} from './../services/SearchService';
   ],
 
   providers: [
-    SearchService
+    SearchService,
+    { provide: APP_CONFIG, useValue: APP_DI_CONFIG }
   ],
 
   exports:[

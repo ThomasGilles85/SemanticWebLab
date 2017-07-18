@@ -15,7 +15,7 @@ import 'rxjs/add/operator/toPromise';
 export class SearchService {
     private headers: Headers;
     private options: RequestOptions;
-    private url = 'http://vocol.iais.fraunhofer.de:/sto/fuseki/myDataset/query'; 
+    private url; 
     private queryOptions;
 
      constructor (private http: Http,@Inject(APP_CONFIG) config: AppConfig) {

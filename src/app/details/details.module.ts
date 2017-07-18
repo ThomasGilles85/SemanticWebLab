@@ -9,7 +9,7 @@ import {SDOViewComponent} from './components/SDO-View';
 import {StandardViewComponent} from './components/Standard-View';
 import {RamiViewComponent} from './components/Rami-View';
 import {GraphViewComponent} from './components/Graph-View';
-
+import {APP_CONFIG,APP_DI_CONFIG} from '../config'
 
 
 
@@ -31,7 +31,8 @@ import {GraphViewComponent} from './components/Graph-View';
   ],
 
   providers: [
-    SearchService
+    SearchService,
+    { provide: APP_CONFIG, useValue: APP_DI_CONFIG }
   ],
 
   exports:[
