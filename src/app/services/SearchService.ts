@@ -56,7 +56,7 @@ export class SearchService {
       'OPTIONAL{?std sto:hasStatus ?status .} ' +
       'OPTIONAL{?std sto:hasPublicationDate ?pubDate .} }';
       
-      console.log(body);
+      // console.log(body);
 
       return this.http.post(this.url,body, this.options)   
       .map(this.extractDataforSearch)
@@ -120,7 +120,7 @@ export class SearchService {
     						  'WHERE{ ' + standard + ' sto:isPartOf ?partNode . ?partNode sto:stoPartName ?PartName .}group by ?partNode } } '+
     			        '}} '+
                   '}';                   
-      console.log(body);
+      // console.log(body);
 
       return this.http.post(this.url,body, this.options)   
       .map(this.extractDataforDetails)
@@ -141,7 +141,7 @@ export class SearchService {
                   '} '+
                   'group by ?x';
                         
-      console.log(body);
+      // console.log(body);
 
       return this.http.post(this.url,body, this.options)   
       .map(this.extractDataforGraphNodes)
@@ -158,7 +158,7 @@ export class SearchService {
                   '?end (sto:relatedTo)* '+ end + ' . '+
                   '}';
                         
-      console.log(body);
+      // console.log(body);
 
       let response = await this.http.post(this.url,body, this.options).toPromise();
 
@@ -178,7 +178,7 @@ export class SearchService {
                   '?std sto:norm ?norm . ' +
                   '}';
                         
-      console.log(body);
+      // console.log(body);
 
       return this.http.post(this.url,body, this.options)   
       .map(this.extractDataforAutoComplete)
@@ -238,8 +238,8 @@ export class SearchService {
         return standard;
     }
 
-    private extractDataforGraphNodes(res: Response):string[] {
-        let standards : string[] = [];
+    private extractDataforGraphNodes(res: Response):any[] {
+        let standards : any[] = [];
       
         let body = res.json();
 
@@ -247,7 +247,9 @@ export class SearchService {
 
         for(let entry of bindings)
         {
-        standards.push(Standard.ConvertFromJsonForGraphNodes(entry));
+          let data = Standard.ConvertFromJsonForGraphNodes(entry)
+          if(data !== null)standards.push(Standard.ConvertFromJsonForGraphNodes(entry));
+          else console.log("Error for child node " + entry.id);
         }
 
         return standards;

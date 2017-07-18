@@ -93,7 +93,7 @@ export class Standard {
 		
          standard.uri = "sto:" + jsonData["std"]["value"].split("#")[1];
 		
-		console.log(standard.uri)
+		// console.log(standard.uri)
         
 		for (let prop in jsonData) {
             if (prop == "status"){
@@ -150,7 +150,9 @@ export class Standard {
         return standard;
     }
 
-    public static ConvertFromJsonForGraphNodes(jsonData: any): string {
+    public static ConvertFromJsonForGraphNodes(jsonData: any): any {
+
+        if(jsonData["publisher"]["value"] === "" || jsonData["norm"]["value"] === "") return null;
 
         let standard:any = {};
 
