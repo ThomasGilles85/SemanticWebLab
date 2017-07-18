@@ -22,16 +22,22 @@ describe('Integration Service Test: SearchService', () => {
     subject = s;
   }));
 
-  it('should get list of items for autocomplete from server', (done) => {
-     subject.getAutocompleteItems().toPromise().then( (result) => {         
-     expect(result.length).toBeGreaterThan(0);
-     done();
-    } );       
-  });
-  it('should get IEC-62443 from server', (done) => {
-     subject.getStandardsforSearch("IEC-62443").toPromise().then( (result:Standard[]) => {         
-     expect(result.length).toBe(1);
-     expect(result[0].norm[0]).toEqual("IEC-62443");
+  // it('should get list of items for autocomplete from server', (done) => {
+  //    subject.getAutocompleteItems().toPromise().then( (result) => {         
+  //    expect(result.length).toBeGreaterThan(0);
+  //    done();
+  //   } );       
+  // });
+  // it('should get IEC-62443 from server', (done) => {
+  //    subject.getStandardsforSearch("IEC-62443").toPromise().then( (result:Standard[]) => {         
+  //    expect(result.length).toBe(1);
+  //    expect(result[0].norm[0]).toEqual("IEC-62443");
+  //    done();
+  //   } );    
+  // });
+  it('should get Details IEC-62443 from server', (done) => {
+     subject.getStandardsforDetails("sto:IEC_62443").toPromise().then( (result:Standard) => {         
+     expect(result.norm[0]).toEqual("IEC-62443");
      done();
     } );       
   });
