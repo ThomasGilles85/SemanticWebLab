@@ -96,13 +96,13 @@ export class Standard {
 		// console.log(standard.uri)
         
 		for (let prop in jsonData) {
-            if (prop == "status"){
+            if (prop == "hasStatus"){
                 standard[prop] = jsonData[prop]["value"];
             }
             else if(prop == "norm") {
                 Standard.setPropertyDataForSplit(standard[prop],jsonData[prop]["value"])
             }
-            else if (prop == "pubDate") {
+            else if (prop == "hasPublicationDate") {
                 standard[prop] = new Date(jsonData[prop]["value"]);
             }
             else if (prop == "publisher") {
@@ -118,13 +118,13 @@ export class Standard {
         let standard = new Standard();
 
         for (let prop in jsonData) {
-            if (prop == "status"){
+            if (prop == "hasStatus"){
                 standard[prop] = jsonData[prop]["value"];
             }
             else if(prop == "norm") {
                 Standard.setPropertyDataForSplit(standard.norm,jsonData[prop]["value"])
             }
-            else if (prop == "pubDate") {
+            else if (prop == "hasPublicationDate") {
                 standard[prop] = new Date(jsonData[prop]["value"]);
             }
             else if (prop == "pubformationDate") {
