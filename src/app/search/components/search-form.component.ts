@@ -66,7 +66,8 @@ export class SearchFormComponent{
         ){
             this.searchService.getAutocompleteItems().subscribe(
             standards => {
-                this.items = standards;
+                if(standards !== undefined)this.items = standards;
+                else this.items = [];
             },
             err => {
                  console.log(err);
