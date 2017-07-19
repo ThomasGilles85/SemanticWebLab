@@ -85,7 +85,7 @@ export class SearchFormComponent{
     submitSearch(){
         this.searchService.getStandardsforSearch(this.searchString).subscribe(
             standards => {
-                EmitterService.get(this.listId).emit(standards);
+                if(standards !== undefined)EmitterService.get(this.listId).emit(standards);
             },
             err => {
                  console.log(err);
