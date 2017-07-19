@@ -259,5 +259,24 @@ describe('Integration Service Test: SearchService', () => {
           }, 500);
         });
     });
+    it('should get undefined for http error for search', (done) => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockError(new Response(new ResponseOptions({
+          status: 404, //here
+          statusText: 'URL not Found',
+          body: "<html><head></head><body></body></html>"
+        })));
+      });
+
+      subject.getStandardsforSearch("I").toPromise()
+        .then((result: any) => { expect(result).toBeUndefined(); })
+        .catch((error: any) => {
+          expect(error).toBeDefined();
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
+    });
   });
 });
