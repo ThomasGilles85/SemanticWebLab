@@ -58,7 +58,7 @@ export class SearchService {
       
       // console.log(body);
 
-      return this.http.post(this.url,body, this.options)   
+      return this.http.post(this.url,body, this.options)
       .map(this.extractDataforSearch)
       .catch(this.handleErrorObservable);       
      } 
@@ -199,7 +199,7 @@ export class SearchService {
 
         for(let entry of bindings)
         {
-        items.push(entry["norm"]["value"]);
+          if(String(entry["norm"]["value"]).replace(" ","") !== "")items.push(entry["norm"]["value"]);
         }
         return items;
      }

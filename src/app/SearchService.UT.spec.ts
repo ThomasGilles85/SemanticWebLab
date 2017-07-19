@@ -86,11 +86,40 @@ describe('Integration Service Test: SearchService', () => {
     });
 
     subject.getAutocompleteItems().toPromise()
-      .then((result: any) => { 
-        expect(result.length).toBe(0); 
+      .then((result: any) => {
+        expect(result.length).toBe(0);
         setTimeout(() => {
           done();
         }, 500);
       });
   });
+
+it('should get empty list for items without value for autocomplete from server', (done) => {
+
+    const mockResponse = {
+      results: {
+        bindings: [
+          { norm: { type: "literal", value: '' } },
+          { norm: { type: "literal", value: '' } },
+          { norm: { type: "literal", value: '' } },
+          { norm: { type: "literal", value: '' } },
+        ]
+      }
+    };
+
+    mockBackend.connections.subscribe((connection) => {
+      connection.mockRespond(new Response(new ResponseOptions({
+        body: JSON.stringify(mockResponse)
+      })));
+    });
+
+    subject.getAutocompleteItems().toPromise().then((result) => {
+      expect(result.length).toBe(0);
+      setTimeout(() => {
+        done();
+      }, 500);
+    });
+  });
+
+
 });
