@@ -125,23 +125,25 @@ describe('Integration Service Test: SearchService', () => {
   });
 
   describe('getStandardForDetails', () => {
-it('should get list of items for search from server', (done) => {
+    it('should get list of items for search from server', (done) => {
 
       const mockResponse = {
         results: {
           bindings: [
-            { 
-              std: { type: "uri", value: 'xx' },  
-              norm: { type: "literal", value: '15131' } ,  
-              publisher: { type: "literal", value: 'IEC' } , 
-              hasStatus: { type: "literal", value: 'Active' } ,  
-              hasPublicationDate: { type: "literal", value: '1918-05-14' } },
-            {               
-              std: { type: "uri", value: 'yy' },  
-              norm: { type: "literal", value: '16464' } ,  
-              publisher: { type: "literal", value: 'ISO' } , 
-              hasStatus: { type: "literal", value: 'Active' } ,  
-              hasPublicationDate: { type: "literal", value: '1918-05-14' } },
+            {
+              std: { type: "uri", value: 'xx' },
+              norm: { type: "literal", value: '15131' },
+              publisher: { type: "literal", value: 'IEC' },
+              hasStatus: { type: "literal", value: 'Active' },
+              hasPublicationDate: { type: "literal", value: '1918-05-14' }
+            },
+            {
+              std: { type: "uri", value: 'yy' },
+              norm: { type: "literal", value: '16464' },
+              publisher: { type: "literal", value: 'ISO' },
+              hasStatus: { type: "literal", value: 'Active' },
+              hasPublicationDate: { type: "literal", value: '1918-05-14' }
+            },
           ]
         }
       };
@@ -159,6 +161,47 @@ it('should get list of items for search from server', (done) => {
         expect(result[0].norm[0]).toBe("15131");
         expect(result[0].hasStatus).toBe("Active");
         expect(result[0].hasPublicationDate.toDateString()).toBe(new Date("1918-05-14").toDateString());
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
+    it('should get list of items for search with error in hasPublicationDate from server', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              std: { type: "uri", value: 'xx' },
+              norm: { type: "literal", value: '15131' },
+              publisher: { type: "literal", value: 'IEC' },
+              hasStatus: { type: "literal", value: 'Active' },
+              hasPublicationDate: { type: "literal", value: 'lala' }
+            },
+            {
+              std: { type: "uri", value: 'yy' },
+              norm: { type: "literal", value: '16464' },
+              publisher: { type: "literal", value: 'ISO' },
+              hasStatus: { type: "literal", value: 'Active' },
+              hasPublicationDate: { type: "literal", value: '1918-05-14' }
+            },
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getStandardsforSearch("I").toPromise().then((result) => {
+        result as Standard[];
+        expect(result.length).toBe(2);
+        expect(result[0].publisher[0].abbreviation[0]).toBe("IEC");
+        expect(result[1].norm[0]).toBe("16464");
+        expect(result[0].hasStatus).toBe("Active");
+        expect(result[0].hasPublicationDate.toDateString()).toBe("Invalid Date");
         setTimeout(() => {
           done();
         }, 500);
