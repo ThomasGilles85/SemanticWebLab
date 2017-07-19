@@ -91,7 +91,10 @@ export class Standard {
 
          var standard = new Standard();
 		
-         standard.uri = "sto:" + jsonData["std"]["value"].split("#")[1];
+        if(jsonData["std"] === null || jsonData["std"] === undefined) return null;
+        if(String(jsonData["std"]["value"]).replace(" ","") === "") return null;
+
+        standard.uri = "sto:" + jsonData["std"]["value"].split("#")[1];
 		
 		// console.log(standard.uri)
         

@@ -219,7 +219,8 @@ export class SearchService {
 
       for(let entry of bindings)
       {
-       standards.push(Standard.ConvertFromJsonForSearch(entry));  // 
+        let result = Standard.ConvertFromJsonForSearch(entry);
+        if(result !== null)standards.push(Standard.ConvertFromJsonForSearch(entry));  // 
       }
 
         return standards;

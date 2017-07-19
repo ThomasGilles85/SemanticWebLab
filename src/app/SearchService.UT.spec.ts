@@ -207,5 +207,41 @@ describe('Integration Service Test: SearchService', () => {
         }, 500);
       });
     });
+    it('should get list empty list for search if std is missing or empty from server', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              std: { type: "uri", value: '' },
+              norm: { type: "literal", value: '15131' },
+              publisher: { type: "literal", value: 'IEC' },
+              hasStatus: { type: "literal", value: 'Active' },
+              hasPublicationDate: { type: "literal", value: 'lala' }
+            },
+            {
+              norm: { type: "literal", value: '16464' },
+              publisher: { type: "literal", value: 'ISO' },
+              hasStatus: { type: "literal", value: 'Active' },
+              hasPublicationDate: { type: "literal", value: '1918-05-14' }
+            },
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getStandardsforSearch("I").toPromise().then((result) => {
+        result as Standard[];
+        expect(result.length).toBe(0);
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
   });
 });
