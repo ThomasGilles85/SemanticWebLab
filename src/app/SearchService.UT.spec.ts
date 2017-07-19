@@ -59,7 +59,7 @@ describe('Integration Service Test: SearchService', () => {
       });
     });
 
-    it('should get null for http error for autocomplete', (done) => {
+    it('should get undefined for http error for autocomplete', (done) => {
 
       mockBackend.connections.subscribe((connection) => {
         connection.mockError(new Response(new ResponseOptions({
