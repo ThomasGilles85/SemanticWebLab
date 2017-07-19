@@ -168,7 +168,7 @@ export class SearchService {
       // .catch(this.handleErrorObservable);  
      } 
 
-      public getAutocompleteItems(): any {
+      public getAutocompleteItems(): Observable<any> {
 
       let body =  'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
                   'PREFIX sto: <https://w3id.org/i40/sto#> '+
@@ -190,6 +190,8 @@ export class SearchService {
         let items = [];
 
         let body = res.json();
+        
+        if( body === null)return null;
 
 
         let bindings = body["results"]["bindings"];
@@ -297,7 +299,7 @@ export class SearchService {
     private handleErrorObservable (error: Response | any) {
         console.log("Error");
         console.error(error.message || error);
-        return null;
+        return error;
     }
 
 }
