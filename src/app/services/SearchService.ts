@@ -185,13 +185,14 @@ export class SearchService {
       .catch(this.handleErrorObservable);       
      } 
 
-     private extractDataforAutoComplete(res:Response):any
+     private extractDataforAutoComplete(res:Response): any
      {
         let items = [];
 
         let body = res.json();
-        
-        if( body === null)return null;
+      
+
+        if(body["results"] === undefined)return items;
 
 
         let bindings = body["results"]["bindings"];

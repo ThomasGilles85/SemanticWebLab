@@ -77,4 +77,20 @@ describe('Integration Service Test: SearchService', () => {
         }, 500);
       });
   });
+  it('Server Error (empty body) for autocomplete', (done) => {
+
+    mockBackend.connections.subscribe((connection) => {
+      connection.mockRespond(new Response(new ResponseOptions({
+        body: {}
+      })));
+    });
+
+    subject.getAutocompleteItems().toPromise()
+      .then((result: any) => { 
+        expect(result.length).toBe(0); 
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+  });
 });
