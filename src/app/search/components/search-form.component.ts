@@ -26,7 +26,7 @@ import { EmitterService } from '../../emitter.service';
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
-                            <div class="container" >
+                            <div >
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search"></span></span>
                                     <input autocomplete="off" type="text" class="form-control" placeholder="Search for" [(ngModel)]="searchString" name="search" (keyup)=filter()>
