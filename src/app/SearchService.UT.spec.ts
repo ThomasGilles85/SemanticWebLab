@@ -217,7 +217,7 @@ describe('Integration Service Test: SearchService', () => {
               norm: { type: "literal", value: '15131' },
               publisher: { type: "literal", value: 'IEC' },
               hasStatus: { type: "literal", value: 'Active' },
-              hasPublicationDate: { type: "literal", value: 'lala' }
+              hasPublicationDate: { type: "literal", value: '1918-05-14' }
             },
             {
               norm: { type: "literal", value: '16464' },
@@ -242,6 +242,22 @@ describe('Integration Service Test: SearchService', () => {
           done();
         }, 500);
       });
+    });
+    it('Server Error (empty body) for search', (done) => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: {}
+        })));
+      });
+
+      subject.getStandardsforSearch("I").toPromise()
+        .then((result: any) => {
+          expect(result.length).toBe(0);
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
     });
   });
 });

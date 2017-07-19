@@ -215,7 +215,10 @@ export class SearchService {
     
       let body = res.json();
 
-        let bindings = body["results"]["bindings"];
+      if(body["results"] === undefined)return standards;
+
+
+      let bindings = body["results"]["bindings"];
 
       for(let entry of bindings)
       {
