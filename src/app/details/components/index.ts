@@ -59,41 +59,4 @@ export class DetailsViewComponent implements OnInit {
     {
         return this.searchService.getStandardsforDetails(this.standardId);
     }
-
-    mockData() {
-        this.standard = new Standard();
-
-        this.standard.norm = ["62714"];
-        this.standard.hasStatus = "Active";
-        this.standard.hasPublicationDate = new Date();
-
-        // this.standard.isPartOf = [new StandardParts("Part1"),new StandardParts("Part2")];
-
-        this.standard.licence = new StandardLicence("Public","Public");
-        this.standard.scope = new Domain("CAD");
-
-
-        this.standard.developer = [new SDO()];
-
-        this.standard.developer[0].abbreviation = ["IEC"];
-        this.standard.developer[0].formationDate = new Date("1906-06-26");
-        this.standard.developer[0].orgName = ["International Electrotechnical Commission"];
-
-        this.standard.publisher = [new SDO()];
-
-        this.standard.publisher[0].abbreviation = ["IEC"];
-        this.standard.publisher[0].formationDate = new Date("1906-06-26");
-        this.standard.publisher[0].orgName = ["International Electrotechnical Commission"];
-
-        this.standard.hasAdminShellSubmodel = new AdminShellSubmodel("Engineering");
-        this.standard.hasRAMIITLayer = new RAMIITLayer("Information");
-        this.standard.ramiHierarchyLevel = [new RAMIHierarchyLevel("FieldDevice"),
-        new RAMIHierarchyLevel("Product"),
-        new RAMIHierarchyLevel("Station"),
-        new RAMIHierarchyLevel("ControlDevice")
-        ];
-
-
-
-    }
 }
