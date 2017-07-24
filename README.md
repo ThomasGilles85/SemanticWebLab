@@ -1,4 +1,4 @@
-[![Build Status]https://travis-ci.org/ThomasGilles85/SemanticWebLab.svg?branch=master](https://travis-ci.org/ThomasGilles85/SemanticWebLab)
+[![Build Status](https://travis-ci.org/ThomasGilles85/SemanticWebLab.svg?branch=master)](https://travis-ci.org/ThomasGilles85/SemanticWebLab)
 [![Coverage Status](https://coveralls.io/repos/github/ThomasGilles85/SemanticWebLab/badge.svg?branch=master)](https://coveralls.io/github/ThomasGilles85/SemanticWebLab?branch=master)
 
 # LabApp
