@@ -1,6 +1,4 @@
-[![CI Status]
-   (http://img.shields.io/travis/roamlrs/roamlrs.svg?style=flat)]
-   (https://travis-ci.org/roamlrs/roamlrs)
+[![Coverage Status](https://coveralls.io/repos/github/ThomasGilles85/SemanticWebLab/badge.svg?branch=master)](https://coveralls.io/github/ThomasGilles85/SemanticWebLab?branch=master)
 
 # LabApp
 
