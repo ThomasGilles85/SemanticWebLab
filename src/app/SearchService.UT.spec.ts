@@ -124,7 +124,7 @@ describe('Integration Service Test: SearchService', () => {
 
   });
 
-  describe('getStandardForDetails', () => {
+  describe('getStandardsForSearch', () => {
     it('should get list of items for search from server', (done) => {
 
       const mockResponse = {
@@ -263,7 +263,7 @@ describe('Integration Service Test: SearchService', () => {
 
       mockBackend.connections.subscribe((connection) => {
         connection.mockError(new Response(new ResponseOptions({
-          status: 404, //here
+          status: 404,
           statusText: 'URL not Found',
           body: "<html><head></head><body></body></html>"
         })));
@@ -279,4 +279,362 @@ describe('Integration Service Test: SearchService', () => {
         });
     });
   });
+  describe('getStandardForDetails', () => {
+    it('should get one standard for details from server', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              pubabbreviation: { type: "uri", value: 'Pub1Abbreviation#Pub2Abbreviation1|Pub2Abbreviation2' },
+              pubformationDate: { type: "literal", value: '1918-05-14|1918-05-14' },
+              puborgName: { type: "literal", value: 'Pub1OrgName#Pub2OrgName1|PubOrgName2' },
+              devabbreviation: { type: "literal", value: 'Dev1Abbreviation#Dev2Abbreviation1|Dev2Abbreviation2' },
+              devformationDate: { type: "literal", value: '1918-05-14|1918-05-14' },
+              devorgName: { type: "uri", value: 'Dev1OrgName#Dev2OrgName1|DevOrgName2' },
+              hasPublicationDate: { type: "literal", value: '1918-05-14' },
+              hasStatus: { type: "literal", value: 'Active' },
+              norm: { type: "literal", value: 'Norm1|Norm2' },
+              licenceTerms: { type: "literal", value: 'Private' },
+              usageType: { type: "literal", value: 'Private' },
+              domainName: { type: "literal", value: 'DomainName' },
+              stoPartNames: { type: "literal", value: 'Pub1Abbreviation|Pub2Abbreviation1#Pub2Abbreviation2' },
+              description: { type: "literal", value: 'Description' }
+            }
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getStandardsforDetails("UT").toPromise().then((result) => {
+        result as Standard;
+        expect(result.publisher[1].abbreviation.length).toBe(2);
+        expect(result.norm[0]).toBe("Norm1");
+        expect(result.hasStatus).toBe("Active");
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
+
+    it('should item for details with error in hasPublicationDate from server', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              pubabbreviation: { type: "uri", value: 'Pub1Abbreviation#Pub2Abbreviation1|Pub2Abbreviation2' },
+              pubformationDate: { type: "literal", value: '1918-05-14|1918-05-14' },
+              puborgName: { type: "literal", value: 'Pub1OrgName#Pub2OrgName1|PubOrgName2' },
+              devabbreviation: { type: "literal", value: 'Dev1Abbreviation#Dev2Abbreviation1|Dev2Abbreviation2' },
+              devformationDate: { type: "literal", value: 'lala|1918-05-14' },
+              devorgName: { type: "uri", value: 'Dev1OrgName#Dev2OrgName1|DevOrgName2' },
+              hasPublicationDate: { type: "literal", value: 'lala' },
+              hasStatus: { type: "literal", value: 'Active' },
+              norm: { type: "literal", value: 'Norm1|Norm2' },
+              licenceTerms: { type: "literal", value: 'Private' },
+              usageType: { type: "literal", value: 'Private' },
+              domainName: { type: "literal", value: 'DomainName' },
+              stoPartNames: { type: "literal", value: 'Pub1Abbreviation|Pub2Abbreviation1#Pub2Abbreviation2' },
+              description: { type: "literal", value: 'Description' }
+            }
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getStandardsforDetails("I").toPromise().then((result) => {
+        result as Standard;
+        expect(result.hasPublicationDate.toDateString()).toBe("Invalid Date");
+        expect(result.developer[0].formationDate.toDateString()).toBe(new Date().toDateString());
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
+
+    it('Server Error (empty body) for details', (done) => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: {}
+        })));
+      });
+
+      subject.getStandardsforDetails("I").toPromise()
+        .then((result: any) => {
+          expect(result).toBe(undefined);
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
+    });
+
+    it('should get undefined for http error for details', (done) => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockError(new Response(new ResponseOptions({
+          status: 404,
+          statusText: 'URL not Found',
+          body: "<html><head></head><body></body></html>"
+        })));
+      });
+
+      subject.getStandardsforDetails("I").toPromise()
+        .then((result: any) => { expect(result).toBeUndefined(); })
+        .catch((error: any) => {
+          expect(error).toBeDefined();
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
+    });
+  });
+
+  describe('getChilds', () => {
+    it('should get empty list from server for object with nodata', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              x: { type: "uri", value: '' },
+              norm: { type: "literal", value: '' },
+              publisher: { type: "literal", value: '' },
+            },
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getChilds("UT").toPromise().then((result: any[]) => {
+        expect(result.length).toBe(0);
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
+
+    it('should get one child from server', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              x: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61360' },
+              norm: { type: "literal", value: '61360' },
+              publisher: { type: "literal", value: 'IEC' },
+            }
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getChilds("UT").toPromise().then((result) => {
+        expect(result[0].name).toBe("IEC_61360");
+        expect(result[0].label).toBe("IEC_61360");
+        expect(result[0].id).toBe("sto:IEC_61360");
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
+
+    it('Server Error (empty body) for getChild', (done) => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: {}
+        })));
+      });
+
+      subject.getChilds("I").toPromise()
+        .then((result: any) => {
+          expect(result.length).toBe(0);
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
+    });
+
+    it('should get undefined for http error for getChild', (done) => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockError(new Response(new ResponseOptions({
+          status: 404,
+          statusText: 'URL not Found',
+          body: "<html><head></head><body></body></html>"
+        })));
+      });
+
+      subject.getChilds("I").toPromise()
+        .then((result: any) => { expect(result).toBeUndefined(); })
+        .catch((error: any) => {
+          expect(error).toBeDefined();
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
+    });
+
+  });
+
+  describe('getPath', () => {
+    it('should get one path from server', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              start: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61460' },
+              relation: { type: "value", value: 'https://w3id.org/i40/sto#relatedTo' },
+              end: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61360' },
+            }
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getPath("Start", "Child").then((result) => {
+        expect(result[0].source).toBe("sto:IEC_61460");
+        expect(result[0].type).toBe("relatedTo");
+        expect(result[0].target).toBe("sto:IEC_61360");
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
+
+    it('should get one path without doublicate from server', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              start: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61460' },
+              relation: { type: "value", value: 'https://w3id.org/i40/sto#relatedTo' },
+              end: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61360' },
+            },
+            {
+              start: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61460' },
+              relation: { type: "value", value: 'https://w3id.org/i40/sto#relatedTo' },
+              end: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61360' },
+            }
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getPath("Start", "Child").then((result) => {
+        expect(result.length).toBe(1);
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
+
+    it('should get one path without return path from server', (done) => {
+
+      const mockResponse = {
+        results: {
+          bindings: [
+            {
+              start: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61460' },
+              relation: { type: "value", value: 'https://w3id.org/i40/sto#relatedTo' },
+              end: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61360' },
+            },
+            {
+              start: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61360' },
+              relation: { type: "value", value: 'https://w3id.org/i40/sto#relatedTo' },
+              end: { type: "uri", value: 'https://w3id.org/i40/sto#IEC_61460' },
+            }
+          ]
+        }
+      };
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      subject.getPath("Start", "Child").then((result) => {
+        expect(result.length).toBe(1);
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    });
+
+    it('Server Error (empty body) for getPath', (done) => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: {}
+        })));
+      });
+
+      subject.getPath("I","O")
+        .then((result: any) => {
+          expect(result.length).toBe(0);
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
+    });
+
+    it('should get undefined for http error for getPath', (done) => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockError(new Response(new ResponseOptions({
+          status: 404,
+          statusText: 'URL not Found',
+          body: "<html><head></head><body></body></html>"
+        })));
+      });
+
+      subject.getPath("I","O")
+        .then((result: any) => { expect(result).toBeUndefined(); })
+        .catch((error: any) => {
+          expect(error).toBeDefined();
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
+    });
+
+  });
+
+
+
 });

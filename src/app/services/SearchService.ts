@@ -128,7 +128,7 @@ export class SearchService {
      } 
 
 
-     getChilds(start:string):Observable<string[]> {
+     getChilds(start:string):Observable<{}> {
 
       let body =  'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
                   'PREFIX sto: <https://w3id.org/i40/sto#> '+
@@ -235,6 +235,9 @@ export class SearchService {
       
         let body = res.json();
 
+        if(body["results"] === undefined)return standard;
+
+
         let bindings = body["results"]["bindings"];
 
         for(let entry of bindings)
@@ -249,6 +252,8 @@ export class SearchService {
         let standards : any[] = [];
       
         let body = res.json();
+
+        if(body["results"] === undefined)return standards;
 
         let bindings = body["results"]["bindings"];
 
@@ -266,6 +271,8 @@ export class SearchService {
         let links:any = [];
       
         let body = res.json();
+
+        if(body["results"] === undefined)return links;
 
         let bindings = body["results"]["bindings"];
 
