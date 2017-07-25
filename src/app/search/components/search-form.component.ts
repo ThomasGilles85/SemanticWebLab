@@ -14,7 +14,7 @@ import { EmitterService } from '../../emitter.service';
     <div class="row">
         <div class="col-md-3 col-lg-3"></div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="text-align: center;">
-            <img src="../../../assets/logo-eis.png"  height="70px"/>
+            <img src="../../../assets/logo-eis.png" width="110" height="60" />
         </div>
         <div class="col-md-3 col-lg-3"></div>
     </div>
