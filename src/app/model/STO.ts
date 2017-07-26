@@ -91,18 +91,21 @@ export class Standard {
 
          var standard = new Standard();
 		
-         standard.uri = "sto:" + jsonData["std"]["value"].split("#")[1];
+        if(jsonData["std"] === null || jsonData["std"] === undefined) return null;
+        if(String(jsonData["std"]["value"]).replace(" ","") === "") return null;
+
+        standard.uri = "sto:" + jsonData["std"]["value"].split("#")[1];
 		
 		// console.log(standard.uri)
         
 		for (let prop in jsonData) {
-            if (prop == "status"){
+            if (prop == "hasStatus"){
                 standard[prop] = jsonData[prop]["value"];
             }
             else if(prop == "norm") {
                 Standard.setPropertyDataForSplit(standard[prop],jsonData[prop]["value"])
             }
-            else if (prop == "pubDate") {
+            else if (prop == "hasPublicationDate") {
                 standard[prop] = new Date(jsonData[prop]["value"]);
             }
             else if (prop == "publisher") {
@@ -118,13 +121,13 @@ export class Standard {
         let standard = new Standard();
 
         for (let prop in jsonData) {
-            if (prop == "status"){
+            if (prop == "hasStatus"){
                 standard[prop] = jsonData[prop]["value"];
             }
             else if(prop == "norm") {
                 Standard.setPropertyDataForSplit(standard.norm,jsonData[prop]["value"])
             }
-            else if (prop == "pubDate") {
+            else if (prop == "hasPublicationDate") {
                 standard[prop] = new Date(jsonData[prop]["value"]);
             }
             else if (prop == "pubformationDate") {

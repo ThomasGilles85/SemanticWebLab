@@ -14,7 +14,7 @@ import { EmitterService } from '../../emitter.service';
     <div class="row">
         <div class="col-md-3 col-lg-3"></div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="text-align: center;">
-            <img src="../../../assets/logo-eis.png"  height="70px"/>
+            <img src="../../../assets/logo-eis.png" width="110" height="60" />
         </div>
         <div class="col-md-3 col-lg-3"></div>
     </div>
@@ -66,7 +66,8 @@ export class SearchFormComponent{
         ){
             this.searchService.getAutocompleteItems().subscribe(
             standards => {
-                this.items = standards;
+                if(standards !== undefined)this.items = standards;
+                else this.items = [];
             },
             err => {
                  console.log(err);
@@ -85,7 +86,7 @@ export class SearchFormComponent{
     submitSearch(){
         this.searchService.getStandardsforSearch(this.searchString).subscribe(
             standards => {
-                EmitterService.get(this.listId).emit(standards);
+                if(standards !== undefined)EmitterService.get(this.listId).emit(standards);
             },
             err => {
                  console.log(err);

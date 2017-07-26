@@ -19,6 +19,11 @@ module.exports = function (config) {
     preprocessors: {
       './src/test.ts': ['@angular/cli']
     },
+    typescriptPreprocessor: {
+      options: {
+        sourceMap: true, // generate source maps
+        noResolve: false // enforce type resolution
+    }},
     mime: {
       'text/x-typescript': ['ts','tsx']
     },
@@ -39,7 +44,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false
-  });
+    browsers: ['Chrome_without_security'],
+    singleRun: false,
+    customLaunchers: {
+      Chrome_without_security: {
+        base: 'Chrome',
+        flags: ['--disable-web-security']
+      }
+    }
+  },);
 };

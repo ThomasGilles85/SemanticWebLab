@@ -120,7 +120,7 @@ export class GraphViewComponent extends collapsedContent implements OnChanges, A
 
         console.log(this.currentStandard);
         this.searchService.getChilds(this.currentStandard).subscribe(
-            async(standard) => {
+            async(standard:any[]) => {
                 let item:any = {};
                 item.name =  this.currentStandard.split(":")[1];
                 item.label = this.currentStandard.split(":")[1];

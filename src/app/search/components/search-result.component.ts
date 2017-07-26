@@ -8,9 +8,9 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 @Component({
     selector: 'search-result',
     template: `        
-        <div class="panel panel-default">
-            <div class="panel-heading">{{standard.publisher[0].abbreviation[0]}} {{standard.norm[0]}}</div>
-            <div class="panel-body">
+        <div class="panel panel-default" style="margin-bottom: 1px;">
+            <div class="panel-heading" >{{standard.publisher[0].abbreviation[0]}} {{standard.norm[0]}}</div>
+            <div class="panel-body" style="padding: 1px; */">
                 <div class="row">
                     <div class="col-md-2">
                         <h4>Status</h4>
@@ -20,8 +20,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
                         <h4>Publication Date</h4>
                         <p>{{standard.hasPublicationDate | date: 'dd/MM/yyyy'}}</p>
                     </div>
-                     <div class="col-md-2">
-                        <button (click)="showDetails($event)" id="{{standard.uri}}" class="btn btn-info" style="horizontal-align:middle"><span class="glyphicon glyphicon-info-sign"></span></button>
+                     <div class="col-md-2 text-center">
+                        <button (click)="showDetails($event)" id="{{standard.uri}}" class="btn btn-info" style="vertical-align: middle"><span class="glyphicon glyphicon-info-sign"></span></button>
                     </div>
                 </div>  
             </div>

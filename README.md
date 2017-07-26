@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/ThomasGilles85/SemanticWebLab.svg?branch=master)](https://travis-ci.org/ThomasGilles85/SemanticWebLab)
+[![Coverage Status](https://coveralls.io/repos/github/ThomasGilles85/SemanticWebLab/badge.svg?branch=master)](https://coveralls.io/github/ThomasGilles85/SemanticWebLab?branch=master)
+
 # LabApp
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.28.3.

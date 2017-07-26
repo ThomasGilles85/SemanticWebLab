@@ -35,7 +35,7 @@ export class SearchService {
     getStandardsforSearch(searchString : string): Observable<Standard[]> {
 
       let body = 'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX sto: <https://w3id.org/i40/sto#> PREFIX dc:<http://purl.org/dc/terms/> '+
-      'SELECT DISTINCT ?std ?norm ?publisher ?status ?pubDate '+
+      'SELECT DISTINCT ?std ?norm ?publisher ?hasStatus ?hasPublicationDate '+
       'WHERE { {'+
       'SELECT DISTINCT ?std ' +
       'WHERE{ ' +
@@ -53,12 +53,12 @@ export class SearchService {
       'SELECT DISTINCT ?std (group_concat(?publisherText;separator="|") as ?publisherCon) ' +
       'WHERE{ ?std sto:publisher ?pubNode . ?pubNode sto:abbreviation ?publisherText .}group by ?std ?pubNode } }group by ?std ' +
       ' } } ' +
-      'OPTIONAL{?std sto:hasStatus ?status .} ' +
-      'OPTIONAL{?std sto:hasPublicationDate ?pubDate .} }';
+      'OPTIONAL{?std sto:hasStatus ?hasStatus .} ' +
+      'OPTIONAL{?std sto:hasPublicationDate ?hasPublicationDate .} }';
       
       // console.log(body);
 
-      return this.http.post(this.url,body, this.options)   
+      return this.http.post(this.url,body, this.options)
       .map(this.extractDataforSearch)
       .catch(this.handleErrorObservable);       
      } 
@@ -70,10 +70,10 @@ export class SearchService {
                   'PREFIX rami: <https://w3id.org/i40/rami#>  '+
                   'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> '+
                   'PREFIX dc:      <http://purl.org/dc/terms/> '+
-                  'SELECT DISTINCT ?pubabbreviation ?pubformationDate ?puborgName ?devabbreviation ?devformationDate ?devorgName ?pubDate ?status ?norm ?licenceTerms ?usageType ?domainName?stoPartNames ?description ' +
+                  'SELECT DISTINCT ?pubabbreviation ?pubformationDate ?puborgName ?devabbreviation ?devformationDate ?devorgName ?hasPublicationDate ?hasStatus ?norm ?licenceTerms ?usageType ?domainName?stoPartNames ?description ' +
                   'WHERE { '+
-                  'OPTIONAL{' + standard + ' sto:hasStatus ?status .} '+
-                  'OPTIONAL{' + standard + ' sto:hasPublicationDate ?pubDate .}  '+
+                  'OPTIONAL{' + standard + ' sto:hasStatus ?hasStatus .} '+
+                  'OPTIONAL{' + standard + ' sto:hasPublicationDate ?hasPublicationDate .}  '+
                   'OPTIONAL{' + standard + ' dc:description ?description . FILTER (LANG(?description) = "en").}   '+
                   'OPTIONAL{ '+
                   '' + standard + ' sto:licence/sto:licenceTerms ?licenceTerms . '+
@@ -128,7 +128,7 @@ export class SearchService {
      } 
 
 
-     getChilds(start:string):Observable<string[]> {
+     getChilds(start:string):Observable<{}> {
 
       let body =  'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
                   'PREFIX sto: <https://w3id.org/i40/sto#> '+
@@ -168,7 +168,7 @@ export class SearchService {
       // .catch(this.handleErrorObservable);  
      } 
 
-      public getAutocompleteItems(): any {
+      public getAutocompleteItems(): Observable<any> {
 
       let body =  'query= PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
                   'PREFIX sto: <https://w3id.org/i40/sto#> '+
@@ -185,18 +185,21 @@ export class SearchService {
       .catch(this.handleErrorObservable);       
      } 
 
-     private extractDataforAutoComplete(res:Response):any
+     private extractDataforAutoComplete(res:Response): any
      {
         let items = [];
 
         let body = res.json();
+      
+
+        if(body["results"] === undefined)return items;
 
 
         let bindings = body["results"]["bindings"];
 
         for(let entry of bindings)
         {
-        items.push(entry["norm"]["value"]);
+          if(String(entry["norm"]["value"]).replace(" ","") !== "")items.push(entry["norm"]["value"]);
         }
         return items;
      }
@@ -212,11 +215,15 @@ export class SearchService {
     
       let body = res.json();
 
-        let bindings = body["results"]["bindings"];
+      if(body["results"] === undefined)return standards;
+
+
+      let bindings = body["results"]["bindings"];
 
       for(let entry of bindings)
       {
-       standards.push(Standard.ConvertFromJsonForSearch(entry));  // 
+        let result = Standard.ConvertFromJsonForSearch(entry);
+        if(result !== null)standards.push(Standard.ConvertFromJsonForSearch(entry));  // 
       }
 
         return standards;
@@ -227,6 +234,9 @@ export class SearchService {
         let standard : Standard;
       
         let body = res.json();
+
+        if(body["results"] === undefined)return standard;
+
 
         let bindings = body["results"]["bindings"];
 
@@ -242,6 +252,8 @@ export class SearchService {
         let standards : any[] = [];
       
         let body = res.json();
+
+        if(body["results"] === undefined)return standards;
 
         let bindings = body["results"]["bindings"];
 
@@ -259,6 +271,8 @@ export class SearchService {
         let links:any = [];
       
         let body = res.json();
+
+        if(body["results"] === undefined)return links;
 
         let bindings = body["results"]["bindings"];
 
@@ -297,7 +311,7 @@ export class SearchService {
     private handleErrorObservable (error: Response | any) {
         console.log("Error");
         console.error(error.message || error);
-        return null;
+        return error;
     }
 
 }
