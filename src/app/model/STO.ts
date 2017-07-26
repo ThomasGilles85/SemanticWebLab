@@ -36,7 +36,7 @@ export class Standard {
     public hasRAMIITLayer: RAMIITLayer;
     public hasAdminShellSubmodel: AdminShellSubmodel;
 
-    private static setPropertyForSplitDataWithManyToOne(refObject:Standard, targetObjectProperty:string,propertyName:string, splitData:string, typeObject:any)
+    public static setPropertyForSplitDataWithManyToOne(refObject:Standard, targetObjectProperty:string,propertyName:string, splitData:string, typeObject:any)
     {
         var data = splitData.split("#");
 
@@ -55,7 +55,7 @@ export class Standard {
         }
     }
 
-    private static setPropertyDataWithManyToOne(refObject:Standard, targetObjectProperty:string,propertyName:string, splitData:any, typeObject:any,DataType:any=String)
+    public static setPropertyDataWithManyToOne(refObject:Standard, targetObjectProperty:string,propertyName:string, splitData:any, typeObject:any,DataType:any=String)
     {
         var data = splitData.split("#");
 
@@ -72,7 +72,7 @@ export class Standard {
         }
     }
 
-    private static setPropertyDataForSplit(refObject:any,splitData:string)
+    public static setPropertyDataForSplit(refObject:any,splitData:string)
     {
         var data = splitData.split("|");
 
@@ -84,89 +84,7 @@ export class Standard {
         }
     }
 
-    /* 
-	based on the sparql results we extract the properties of data as parsing JSON object 
-	*/
-    public static ConvertFromJsonForSearch(jsonData: any): Standard {
-
-         var standard = new Standard();
-		
-        if(jsonData["std"] === null || jsonData["std"] === undefined) return null;
-        if(String(jsonData["std"]["value"]).replace(" ","") === "") return null;
-
-        standard.uri = "sto:" + jsonData["std"]["value"].split("#")[1];
-		
-		// console.log(standard.uri)
-        
-		for (let prop in jsonData) {
-            if (prop == "hasStatus"){
-                standard[prop] = jsonData[prop]["value"];
-            }
-            else if(prop == "norm") {
-                Standard.setPropertyDataForSplit(standard[prop],jsonData[prop]["value"])
-            }
-            else if (prop == "hasPublicationDate") {
-                standard[prop] = new Date(jsonData[prop]["value"]);
-            }
-            else if (prop == "publisher") {
-                Standard.setPropertyForSplitDataWithManyToOne(standard,"publisher","abbreviation",jsonData[prop]["value"],SDO)
-            }
-        }
-
-        return standard;
-    }
-
-    public static ConvertFromJsonForDetails(jsonData: any): Standard {
-
-        let standard = new Standard();
-
-        for (let prop in jsonData) {
-            if (prop == "hasStatus"){
-                standard[prop] = jsonData[prop]["value"];
-            }
-            else if(prop == "norm") {
-                Standard.setPropertyDataForSplit(standard.norm,jsonData[prop]["value"])
-            }
-            else if (prop == "hasPublicationDate") {
-                standard[prop] = new Date(jsonData[prop]["value"]);
-            }
-            else if (prop == "pubformationDate") {
-                Standard.setPropertyDataWithManyToOne(standard,"publisher","formationDate",jsonData[prop]["value"],SDO,Date)
-            }
-            else if (prop == "pubabbreviation") {
-                Standard.setPropertyForSplitDataWithManyToOne(standard,"publisher","abbreviation",jsonData[prop]["value"],SDO)
-            }
-            else if (prop == "puborgName") {
-                Standard.setPropertyForSplitDataWithManyToOne(standard,"publisher","orgName",jsonData[prop]["value"],SDO)
-            }
-            else if (prop == "devformationDate") {
-                Standard.setPropertyDataWithManyToOne(standard,"developer","formationDate",jsonData[prop]["value"],SDO,Date)
-            }
-            else if (prop == "devabbreviation") {
-                Standard.setPropertyForSplitDataWithManyToOne(standard,"developer","abbreviation",jsonData[prop]["value"],SDO)
-            }
-            else if (prop == "devorgName") {
-                Standard.setPropertyForSplitDataWithManyToOne(standard,"developer","orgName",jsonData[prop]["value"],SDO)
-            }
-        }
-
-        return standard;
-    }
-
-    public static ConvertFromJsonForGraphNodes(jsonData: any): any {
-
-        if(jsonData["publisher"]["value"] === "" || jsonData["norm"]["value"] === "") return null;
-
-        let standard:any = {};
-
-        standard.name = jsonData["publisher"]["value"].split("|")[0]+ "_" + jsonData["norm"]["value"].split("|")[0];
-        standard.label = jsonData["publisher"]["value"].split("|")[0]+ "_" + jsonData["norm"]["value"].split("|")[0];
-        var temp = jsonData["x"]["value"].split("/")[4].split("#");
-
-        standard.id = temp[0] + ":" + temp[1];
-
-        return standard;
-    }
+   
 }
 
 

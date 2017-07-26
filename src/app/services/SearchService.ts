@@ -2,8 +2,8 @@ import { Injectable , Inject }     from '@angular/core';
 import { Http, Response, Headers, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import { Standard,SDO,Domain,ISA95Level,StandardLicence,StandardParts,RAMIITLayer,RAMIHierarchyLevel,AdminShellSubmodel } from '../model/STO';
 import {Observable} from 'rxjs/Rx';
-import {APP_CONFIG,AppConfig} from '../config'
-
+import {APP_CONFIG,AppConfig} from '../config';
+import {JsonUtilityService} from './JsonService';;
 
 // Import RxJs required methods
 import 'rxjs/add/operator/map';
@@ -19,16 +19,16 @@ export class SearchService {
     private queryOptions;
 
      constructor (private http: Http,@Inject(APP_CONFIG) config: AppConfig) {
-        
         this.headers = new Headers();
 
         this.url = config.url;
-
+        //console.log( this.url);
         this.headers.append('Accept-Encoding', 'gzip, deflate'); 
         this.headers.append('Accept', 'application/sparql-results+json,*/*;q=0.9'); 
         this.headers.append('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8'); 
 
         this.options = new RequestOptions({ headers: this.headers }); // Create a request option
+		
 
      }
     /* getStandardsforSearch is to search about the details of standards using different properties like norm,publisher ,developer,description,orgName */
@@ -181,7 +181,6 @@ export class SearchService {
       // console.log(body);
 
       return this.http.post(this.url,body, this.options)   
-      .map(this.extractDataforAutoComplete)
       .catch(this.handleErrorObservable);       
      } 
 
@@ -222,8 +221,8 @@ export class SearchService {
 
       for(let entry of bindings)
       {
-        let result = Standard.ConvertFromJsonForSearch(entry);
-        if(result !== null)standards.push(Standard.ConvertFromJsonForSearch(entry));  // 
+        let result = JsonUtilityService.parseJsonSerachResponse(entry);
+        if(result !== null)standards.push(JsonUtilityService.parseJsonSerachResponse(entry)); 
       }
 
         return standards;
@@ -242,7 +241,7 @@ export class SearchService {
 
         for(let entry of bindings)
         {
-        standard = Standard.ConvertFromJsonForDetails(entry);
+        standard = JsonUtilityService.parseJsonDetailsResponse(entry);
         }
 
         return standard;
@@ -259,8 +258,8 @@ export class SearchService {
 
         for(let entry of bindings)
         {
-          let data = Standard.ConvertFromJsonForGraphNodes(entry)
-          if(data !== null)standards.push(Standard.ConvertFromJsonForGraphNodes(entry));
+          let data = JsonUtilityService.parseJsonFromGraphNodes(entry)
+          if(data !== null)standards.push(JsonUtilityService.parseJsonFromGraphNodes(entry));
           else console.log("Error for child node " + entry.id);
         }
 
