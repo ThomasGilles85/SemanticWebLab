@@ -56,7 +56,7 @@ export class JsonUtilityService{
         var standard = new Standard();
         if(jsonResponse["std"] === null || jsonResponse["std"] === undefined) return null;
         if(String(jsonResponse["std"]["value"]).replace(" ","") === "") return null;   
-		standard.uri = "sto:" + jsonResponse["std"]["value"].split("#")[1];
+			standard.uri = "sto:" + jsonResponse["std"]["value"].split("#")[1];
 		
 		for (let property in jsonResponse){
 			
