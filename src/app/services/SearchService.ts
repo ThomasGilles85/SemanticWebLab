@@ -18,7 +18,7 @@ export class SearchService {
     private url; 
     private queryOptions;
 
-     constructor (private http: Http,@Inject(APP_CONFIG) config: AppConfig) {
+     constructor (private http: Http,@Inject(APP_CONFIG) config: AppConfig,private jsonService: JsonUtilityService) {
         this.headers = new Headers();
 
         this.url = config.url;
@@ -59,7 +59,7 @@ export class SearchService {
       // console.log(body);
 
       return this.http.post(this.url,body, this.options)
-      .map(this.extractDataforSearch)
+      .map((data)=>this.extractDataforSearch(data))
       .catch(this.handleErrorObservable);       
      } 
 
@@ -123,7 +123,7 @@ export class SearchService {
       // console.log(body);
 
       return this.http.post(this.url,body, this.options)   
-      .map(this.extractDataforDetails)
+      .map((data)=>this.extractDataforDetails(data))
       .catch(this.handleErrorObservable);       
      } 
 
@@ -144,7 +144,7 @@ export class SearchService {
       // console.log(body);
 
       return this.http.post(this.url,body, this.options)   
-      .map(this.extractDataforGraphNodes)
+      .map((data)=>this.extractDataforGraphNodes(data))
       .catch(this.handleErrorObservable);       
      } 
 
@@ -180,7 +180,8 @@ export class SearchService {
                         
       // console.log(body);
 
-      return this.http.post(this.url,body, this.options)   
+      return this.http.post(this.url,body, this.options).
+      map((data) => this.extractDataforAutoComplete(data))
       .catch(this.handleErrorObservable);       
      } 
 
@@ -221,8 +222,8 @@ export class SearchService {
 
       for(let entry of bindings)
       {
-        let result = JsonUtilityService.parseJsonSerachResponse(entry);
-        if(result !== null)standards.push(JsonUtilityService.parseJsonSerachResponse(entry)); 
+        let result = this.jsonService.parseJsonSerachResponse(entry);
+        if(result !== null)standards.push(this.jsonService.parseJsonSerachResponse(entry)); 
       }
 
         return standards;
@@ -241,7 +242,7 @@ export class SearchService {
 
         for(let entry of bindings)
         {
-        standard = JsonUtilityService.parseJsonDetailsResponse(entry);
+        standard = this.jsonService.parseJsonDetailsResponse(entry);
         }
 
         return standard;
@@ -258,8 +259,8 @@ export class SearchService {
 
         for(let entry of bindings)
         {
-          let data = JsonUtilityService.parseJsonFromGraphNodes(entry)
-          if(data !== null)standards.push(JsonUtilityService.parseJsonFromGraphNodes(entry));
+          let data = this.jsonService.parseJsonFromGraphNodes(entry)
+          if(data !== null)standards.push(this.jsonService.parseJsonFromGraphNodes(entry));
           else console.log("Error for child node " + entry.id);
         }
 

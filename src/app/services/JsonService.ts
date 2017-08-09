@@ -1,11 +1,12 @@
+import { Injectable , Inject }     from '@angular/core';
 import { Standard,SDO,Domain,ISA95Level,StandardLicence,StandardParts,RAMIITLayer,RAMIHierarchyLevel,AdminShellSubmodel } from '../model/STO';
 
+@Injectable()
 export class JsonUtilityService{
   
-	public static parseJsonDetailsResponse(jsonResponse: any): Standard {
+	public parseJsonDetailsResponse(jsonResponse: any): Standard {
 		
 		let standard = new Standard();       
-		
 		for (let property in jsonResponse) {	
 		    if (property == "hasStatus"){
                 standard[property] = jsonResponse[property]["value"];
@@ -38,7 +39,7 @@ export class JsonUtilityService{
         return standard;
     }
 
-	public static parseJsonFromGraphNodes(jsonResponse: any): any {
+	public parseJsonFromGraphNodes(jsonResponse: any): any {
 		
         if(jsonResponse["publisher"]["value"] === "" || jsonResponse["norm"]["value"] === "") return null;
         let standard:any = {};
@@ -51,7 +52,7 @@ export class JsonUtilityService{
    
    
    
-    public static parseJsonSerachResponse(jsonResponse: any): Standard {
+    public parseJsonSerachResponse(jsonResponse: any): Standard {
 
         var standard = new Standard();
         

@@ -1,5 +1,6 @@
 import { Standard } from './model/STO'
 import { SearchService } from './services/SearchService';
+import { JsonUtilityService } from './services/JsonService';
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpModule, Http, BaseRequestOptions, XHRBackend, Response, ResponseOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
@@ -21,7 +22,8 @@ describe('Integration Service Test: SearchService', () => {
     [
       { provide: APP_CONFIG, useValue: APP_DI_CONFIG },
       { provide: XHRBackend, useClass: MockBackend },
-      SearchService
+      SearchService,
+      JsonUtilityService
     ]
   })
   );
