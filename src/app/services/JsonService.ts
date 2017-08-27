@@ -1,7 +1,6 @@
 import { Injectable , Inject }     from '@angular/core';
 import { Standard,SDO,Domain,ISA95Level,StandardLicence,StandardParts,RAMIITLayer,RAMIHierarchyLevel,AdminShellSubmodel } from '../model/STO';
-/*JsonUtilityService class which has the injectable decorator. The injectable decorator allows the functionality of this class to be injected and used in HTTPmodule .
-   The Injectable decorator is imported from the angular/core module.Importing our JsonUtilityservice to HTTPModule and register the jsonUtilityservice as provider in HTTPModule. */
+
 @Injectable()
 export class JsonUtilityService{
   
