@@ -10,7 +10,6 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 
-/* SearchService class which has the injectable decorator. The injectable decorator allows the functionality of this class to be injected and used in  module */
 @Injectable()
 export class SearchService {
     private headers: Headers;
