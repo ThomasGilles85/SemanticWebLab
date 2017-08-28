@@ -9,19 +9,23 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
     selector: 'search-result',
     template: `        
         <div class="panel panel-default" style="margin-bottom: 1px;">
-            <div class="panel-heading" >{{standard.publisher[0].abbreviation[0]}} {{standard.norm[0]}}</div>
+            <div class="panel-heading" style="height: 20px">{{standard.publisher[0].abbreviation[0]}} {{standard.norm[0]}}</div>
             <div class="panel-body" style="padding: 1px; */">
                 <div class="row">
-                    <div class="col-md-2">
-                        <h4>Status</h4>
-                        <p>{{standard.hasStatus}}</p>
+                    <div class="col-md-1">
+                        <h4>Status:</h4>
                     </div>
                     <div class="col-md-2">
-                        <h4>Publication Date</h4>
-                        <p>{{standard.hasPublicationDate | date: 'dd/MM/yyyy'}}</p>
+                        <h4>{{standard.hasStatus}}</h4>
                     </div>
-                     <div class="col-md-2 text-center">
-                        <button (click)="showDetails($event)" id="{{standard.uri}}" class="btn btn-info" style="vertical-align: middle"><span class="glyphicon glyphicon-info-sign"></span></button>
+                    <div class="col-md-3">
+                        <h4>Publication Date:</h4>
+                    </div>
+                    <div class="col-md-1">
+                        <h4>{{standard.hasPublicationDate | date: 'dd/MM/yyyy'}}</h4>
+                    </div>
+                     <div class="col-md-5 text-right">
+                        <button (click)="showDetails($event)" id="{{standard.uri}}" class="btn btn-info" style="height:35px ; width=35px ; vertical-align: middle; margin:0 auto; display:block;"><span style="height:35px ; width=35px ; text-align: center ; vertical-align: middle ;  horizontal-align: middle" class="glyphicon glyphicon-info-sign"></span></button>
                     </div>
                 </div>  
             </div>

@@ -8,7 +8,7 @@ import { SDO } from "app/model/STO";
 @Component({
     selector: 'SDO-view',
     template: `
-    <div class="panel panel-primary">
+    <div class="panel panel-primary" style="margin-left: 0px; margin-right: 0px; margin-top: 5px ; margin-bottom: 5px">
         <div class="panel-heading">
             <div class="row">
                 <div class="col-xs-9 col-md-10">

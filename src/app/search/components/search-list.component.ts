@@ -11,11 +11,11 @@ import { EmitterService } from '../../emitter.service';
     selector: 'search-list',
     template: `
         <div class="row">
-            <div class ="col-xs-0 col-sm-0 col-md-2"></div>
-            <div class ="col-md-8 col-xs-12 col-sm-12">
+            <div class ="col-xs-0 col-sm-0 col-md-3"></div>
+            <div class ="col-md-6 col-xs-12 col-sm-12">
                 <search-result [listId]="listId" *ngFor="let standard of standards" [standard]="standard"></search-result>
             </div>
-            <div class ="col-xs-0 col-sm-0 col-md-2"></div>
+            <div class ="col-xs-0 col-sm-0 col-md-3"></div>
         </div>
     `,
 })

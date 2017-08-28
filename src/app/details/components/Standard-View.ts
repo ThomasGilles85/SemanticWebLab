@@ -8,7 +8,7 @@ import { Standard } from "app/model/STO";
 @Component({
     selector: 'Standard-view',
     template: `
-    <div class="panel panel-primary">
+    <div class="panel panel-primary" style="margin-left: 0px; margin-right: 0px; margin-top: 5px ; margin-bottom: 5px">
         <div class="panel-heading">
                 <h4 class="panel-title">
             <a (click)="isCollapsedContent = !isCollapsedContent">{{header}}</a>
